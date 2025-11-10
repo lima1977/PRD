@@ -1,0 +1,26 @@
+﻿<MudNavMenu>
+    <br/>
+    <MudNavLink Href="/home" Match="NavLinkMatch.All" Icon="@Icons.Material.Rounded.Home" Class="MEU" Style="height:50px;margin:0px;">Home</MudNavLink>
+    <MudDivider Style="height:5px" />
+    <MudNavLink Href="/recebimento-produtos" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book" Style="height:40px;margin:0px; font-size:13px;color:white;font-family:'Segoe UI'">Relatório de Senhas</MudNavLink>
+    <MudDivider Style="height:5px" />
+    <MudNavLink Href="/recebimento-fiscal" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Assignment" Style="height:40px;margin:0px;font-size:13px;color:white;font-family:'Segoe UI'">Relatório de fiscal</MudNavLink>
+    <MudDivider Style="height:5px" />
+    <MudNavLink Href="/recebimento-portaria" Match="NavLinkMatch.Prefix" Class="list-group-item-primary" Icon="@Icons.Material.Filled.Logout" Style="height:40px;margin:0px;font-size:13px;color:white;font-family:'Segoe UI'">Recebimento portaria</MudNavLink>
+    <MudDivider Style="height:5px" />
+    <MudNavLink Href="/" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Logout" Style="height:40px;margin:0px;font-size:13px;color:white;font-family:'Segoe UI'">Log-Out</MudNavLink>
+    <MudDivider Style="height:5px" />
+
+</MudNavMenu>
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

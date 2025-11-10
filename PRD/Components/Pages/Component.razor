@@ -1,0 +1,412 @@
+﻿@page "/recebimento-produtos"
+@using System.IO
+@using MudBlazor
+@using ClosedXML.Excel
+@using Microsoft.AspNetCore.Components.Forms
+@using PRD.Intefaces
+@using PRD.Model
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+
+    <!-- Cabeçalho -->
+    <MudText Typo="Typo.h4" Class="mb-2" Color="Color.Primary">
+        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Class="mr-2" />
+        Recebimento e Descarga de Produtos
+    </MudText>
+
+    <MudText Typo="Typo.body2" Class="mb-6" Color="Color.Secondary">
+        Faça o upload do arquivo Excel (.xlsx ou .xls) para processar e carregar os dados de recebimento.
+    </MudText>
+
+    <!-- Contadores -->
+    @if (dadosProcessados)
+    {
+        <MudGrid Class="mb-6">
+            <MudItem xs="12" sm="3">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardContent>
+                        <div class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Inventory" Color="Color.Primary" Size="Size.Large" Class="mr-3" />
+                            <div>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">Total de Produtos</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Primary">@totalProdutos.ToString("N0")</MudText>
+                            </div>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardContent>
+                        <div class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Large" Class="mr-3" />
+                            <div>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">Agendadas / Concluídas</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Success">@previa_agendamento</MudText>
+                            </div>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardContent>
+                        <div class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Color="Color.Info" Size="Size.Large" Class="mr-3" />
+                            <div>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">Em Descarga</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Info">@emDescarga</MudText>
+                            </div>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardContent>
+                        <div class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Large" Class="mr-3" />
+                            <div>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">Pendentes</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Warning">@pendentes</MudText>
+                            </div>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    }
+
+    <!-- Área de Upload -->
+    <MudCard Elevation="3">
+        <MudCardContent>
+
+            @if (!processando && !dadosProcessados)
+            {
+                <MudPaper Elevation="0"
+                          Class="d-flex flex-column align-center justify-center pa-8 mud-width-full"
+                          Style="min-height: 300px; border: 2px dashed var(--mud-palette-primary); background-color: var(--mud-palette-background-grey);">
+
+                    <MudIcon Icon="@Icons.Material.Filled.FileUpload" Color="Color.Primary" Size="Size.Large" Style="font-size: 80px;" Class="mb-4" />
+                    <MudText Typo="Typo.h6" Class="mb-2">Arraste o arquivo Excel aqui</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">
+                        ou clique abaixo para selecionar
+                    </MudText>
+
+                    <InputFile id="fileInput" OnChange="OnInputFileChange" hidden accept=".xlsx,.xls" />
+
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                               Size="Size.Large"
+                               for="fileInput">
+                        Selecionar Arquivo Excel
+                    </MudButton>
+
+                    @if (!string.IsNullOrEmpty(nomeArquivo))
+                    {
+                        <MudChip T="string" Color="Color.Primary" Icon="@Icons.Material.Filled.InsertDriveFile" Class="mt-4" OnClose="LimparArquivo">
+                            @nomeArquivo
+                        </MudChip>
+                    }
+                </MudPaper>
+            }
+            else if (processando)
+            {
+                <MudPaper Elevation="0"
+                          Class="d-flex flex-column align-center justify-center pa-8 mud-width-full"
+                          Style="min-height: 300px;">
+                    <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Class="mb-4" />
+                    <MudText Typo="Typo.h6">Processando arquivo...</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-2">
+                        @totalProdutos linhas processadas até agora...
+                    </MudText>
+                </MudPaper>
+            }
+            else if (dadosProcessados)
+            {
+                <MudPaper Elevation="0"
+                          Class="d-flex flex-column align-center justify-center pa-8 mud-width-full"
+                          Style="min-height: 300px;">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Large" Style="font-size: 80px;" Class="mb-4" />
+                    <MudText Typo="Typo.h6" Color="Color.Success" Class="mb-2">Arquivo processado com sucesso!</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">
+                        @totalProdutos produtos foram carregados e estão prontos para salvar
+                    </MudText>
+
+                    <div class="d-flex gap-3">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Success"
+                                   StartIcon="@Icons.Material.Filled.Save"
+                                   OnClick="SalvarTodosNoBanco"
+                                   Disabled="salvando">
+                            @if (salvando)
+                            {
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                                <text>Salvando...</text>
+                            }
+                            else
+                            {
+                                <text>Salvar no Banco</text>
+                            }
+                        </MudButton>
+
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Visibility"
+                                   OnClick="VisualizarDados">
+                            Visualizar Dados
+                        </MudButton>
+
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                   OnClick="NovoUpload">
+                            Novo Upload
+                        </MudButton>
+                    </div>
+                </MudPaper>
+            }
+
+        </MudCardContent>
+    </MudCard>
+
+    <!-- Instruções -->
+    @if (!dadosProcessados)
+    {
+        <MudCard Elevation="1" Class="mt-4">
+            <MudCardContent>
+                <MudText Typo="Typo.h6" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                    Instruções
+                </MudText>
+                <MudText Typo="Typo.body2">• O arquivo deve estar no formato Excel (.xlsx ou .xls)</MudText>
+                <MudText Typo="Typo.body2">• O tamanho máximo do arquivo é 10MB</MudText>
+                <MudText Typo="Typo.body2">• Certifique-se de que as colunas estão corretas e completas</MudText>
+                <MudText Typo="Typo.body2">• Os dados são validados automaticamente após o upload</MudText>
+            </MudCardContent>
+        </MudCard>
+    }
+
+</MudContainer>
+
+@code {
+    [Inject] private IDialogService DialogService { get; set; }
+    [Inject] private ISnackbar Snackbar { get; set; }
+    [Inject] private IProdutoService ProdutoService { get; set; }
+
+    private bool processando = false;
+    private bool dadosProcessados = false;
+    private bool salvando = false;
+    private string nomeArquivo = string.Empty;
+
+    // Contadores
+    private int totalProdutos = 0;
+    private int previa_agendamento = 0;
+    private int emDescarga = 0;
+    private int pendentes = 0;
+
+    private List<BaseLNcs> produtosCarregados = new();
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+            await OnFileSelected(file);
+    }
+
+    private async Task OnFileSelected(IBrowserFile file)
+    {
+        if (file == null) return;
+
+        processando = true;
+        nomeArquivo = file.Name;
+        dadosProcessados = false;
+
+        try
+        {
+            const long maxFileSize = 1024 * 1024 * 100; // 100 MB
+
+            await using var readStream = file.OpenReadStream(maxAllowedSize: maxFileSize);
+            using var memoryStream = new MemoryStream();
+            await readStream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            await Task.Run(() => ProcessarExcel(memoryStream));
+
+            dadosProcessados = true;
+            Snackbar.Add($"Arquivo '{nomeArquivo}' processado com sucesso! {totalProdutos} produtos carregados.", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erro ao processar arquivo: {ex.Message}", Severity.Error);
+            Console.WriteLine($"Erro: {ex}");
+        }
+        finally
+        {
+            processando = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ProcessarExcel(Stream stream)
+    {
+        produtosCarregados.Clear();
+        totalProdutos = previa_agendamento = emDescarga = pendentes = 0;
+
+        using var workbook = new XLWorkbook(stream);
+        var worksheet = workbook.Worksheet(1);
+
+        var rows = worksheet.RowsUsed().Skip(1);
+        foreach (var row in rows)
+        {
+            try
+            {
+                string armazem = row.Cell(1).GetString()?.Trim().ToUpper();
+                if (armazem != "AR1200") continue;
+
+                var produto = new BaseLNcs
+                {
+                    Armazem = row.Cell(1).GetString(),
+                    Senha = row.Cell(2).GetString(),
+                    StatusSenha = row.Cell(3).GetString(),
+                    BOSS = row.Cell(4).GetString(),
+                    Fornecedor = row.Cell(5).GetString(),
+                    RazaoSocial = row.Cell(6).GetString(),
+                    Doca = row.Cell(7).GetString(),
+                    DataAgenda = TryParseDate(row.Cell(8).GetString()),
+                    PlacaVeiculo = row.Cell(9).GetString(),
+                    DataChegada = TryParseDate(row.Cell(10).GetString()),
+                    HoraChegada = TryParseTime(row.Cell(11).GetString()),
+                    DataLancamento = TryParseDate(row.Cell(12).GetString()),
+                    HoraLancamento = TryParseTime(row.Cell(13).GetString()),
+                    DataEnvioBOSS = TryParseDate(row.Cell(14).GetString()),
+                    HoraEnvioBOSS = TryParseTime(row.Cell(15).GetString()),
+                    DataChamada = TryParseDate(row.Cell(16).GetString()),
+                    HoraChamada = TryParseTime(row.Cell(17).GetString()),
+                    DataAprovacao = TryParseDate(row.Cell(18).GetString()),
+                    HoraAprovacao = TryParseTime(row.Cell(19).GetString()),
+                    Pedido = row.Cell(20).GetString(),
+                    Linha = row.Cell(21).GetString(),
+                    CnpjPnExpedidor = row.Cell(22).GetString(),
+                    Companhia = row.Cell(23).GetString(),
+                    ItemSKU = row.Cell(24).GetString(),
+                    DescricaoItem = row.Cell(25).GetString(),
+                    ItemFornecedor = row.Cell(26).GetString(),
+                    QtdAgendada = TryParseDecimal(row.Cell(27).GetString()),
+                    QtdRecebida = TryParseDecimal(row.Cell(28).GetString()),
+                    Preco = TryParseDecimal(row.Cell(29).GetString()),
+                    NotaFiscal = row.Cell(30).GetString(),
+                    Serie = row.Cell(31).GetString(),
+                    Localizador = row.Cell(32).GetString(),
+                    RemessaArmazem = row.Cell(33).GetString(),
+                    RecFisico = row.Cell(34).GetString(),
+                    RecFiscal = row.Cell(35).GetString(),
+                    CodigoEntrega = row.Cell(36).GetString(),
+                    Transportadora = row.Cell(37).GetString(),
+                    SKUOnline = row.Cell(38).GetString(),
+                    EanTributario = row.Cell(39).GetString(),
+                    Multicanalidade = row.Cell(40).GetString(),
+                    CategoriaPlano = row.Cell(41).GetString(),
+                    Diretoria = row.Cell(42).GetString(),
+                    ProdutoXD = row.Cell(43).GetString(),
+                    ValorAgenda = TryParseDecimal(row.Cell(44).GetString()),
+                    ValorComEstornoLN = TryParseDecimal(row.Cell(45).GetString()),
+                    ValorComEstornoBI = TryParseDecimal(row.Cell(46).GetString()),
+                    DataRecAgenda = TryParseDate(row.Cell(47).GetString()),
+                    HoraRecAgenda = TryParseTime(row.Cell(48).GetString()),
+                    Devolucao = row.Cell(49).GetString(),
+                    Status = row.Cell(50).GetString(),
+                    Login = row.Cell(51).GetString(),
+                    NoShow = row.Cell(52).GetString(),
+                    CodigoTransportadora = row.Cell(53).GetString(),
+                    TipoIdentificadorFiscal = row.Cell(54).GetString(),
+                    CnpjTransportadora = row.Cell(55).GetString(),
+                    NomeTransportadora = row.Cell(56).GetString(),
+                    TipoCompra = row.Cell(57).GetString(),
+                    TipoDeposito = row.Cell(58).GetString(),
+                    DocaDescarga = row.Cell(59).GetString()
+                };
+
+                produtosCarregados.Add(produto);
+                totalProdutos++;
+
+                switch (produto.StatusSenha?.Trim().ToUpper())
+                {
+                    case "AGENDADA / CONCLUÍDA":
+                        previa_agendamento++; break;
+                    case "EM DESCARGA":
+                    case "DESCARGA":
+                        emDescarga++; break;
+                    case "PENDENTE":
+                        pendentes++; break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro linha {row.RowNumber()}: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task SalvarTodosNoBanco()
+    {
+        salvando = true;
+        StateHasChanged();
+
+        try
+        {
+            Snackbar.Add("Salvando dados no banco...", Severity.Info);
+            await ProdutoService.AdicionarLoteAsync(produtosCarregados);
+            Snackbar.Add($"{totalProdutos} produtos salvos com sucesso!", Severity.Success);
+            produtosCarregados.Clear();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erro ao salvar: {ex.Message}", Severity.Error);
+            Console.WriteLine(ex);
+        }
+        finally
+        {
+            salvando = false;
+            StateHasChanged();
+        }
+    }
+
+    private void NovoUpload()
+    {
+        dadosProcessados = false;
+        nomeArquivo = string.Empty;
+        produtosCarregados.Clear();
+        totalProdutos = previa_agendamento = emDescarga = pendentes = 0;
+    }
+
+    private void LimparArquivo() => nomeArquivo = string.Empty;
+
+    private static DateTime? TryParseDate(string text) =>
+        DateTime.TryParse(text, out var date) ? date : null;
+
+    private static TimeSpan? TryParseTime(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return null;
+        if (TimeSpan.TryParse(text, out var t)) return t;
+        if (DateTime.TryParse(text, out var dt)) return dt.TimeOfDay;
+        return null;
+    }
+
+    private static decimal? TryParseDecimal(string text) =>
+        decimal.TryParse(text, System.Globalization.NumberStyles.Any,
+                         System.Globalization.CultureInfo.InvariantCulture, out var val)
+            ? val : null;
+
+    private async Task VisualizarDados()
+    {
+        var parametros = new DialogParameters { ["Produtos"] = produtosCarregados };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true, CloseButton = true };
+        await DialogService.ShowAsync<VisualizarProdutos>("Produtos Carregados", parametros, options);
+    }
+}

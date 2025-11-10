@@ -1,0 +1,162 @@
+﻿@using PRD.Model
+@inject MudBlazor.IDialogService DialogService
+
+
+<MudDialog>
+    <DialogContent>
+
+
+        <MudTextField @bind-Value="filtro" Placeholder="Filtrar por Armazem, Pedido..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="mb-2" />
+
+        <MudTable Items="produtosFiltrados" Hover="true" Bordered="true" Striped="true" Breakpoint="Breakpoint.Sm">
+            <ToolBarContent>
+                <MudText Typo="Typo.subtitle2">Total: @produtosFiltrados.Count()</MudText>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Armazém</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Senha</MudTh>
+                <MudTh Style="width:auto;font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Status Senha</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">BOSS</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Fornecedor</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Razão Social</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Doca</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Data Agenda</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Placa Veículo</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Data Chegada</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Hora Chegada</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Data Lançamento</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Hora Lançamento</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Data Envio BOSS</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Hora Envio BOSS</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Data Chamada</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Hora Chamada</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Data Aprovação</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Hora Aprovação</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Pedido</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Linha</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">CNPJ PN Expedidor</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Companhia</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Item SKU</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Descrição do Item</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Item Fornecedor</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Qtd. Agendada</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Qtd. Recebida</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Preço</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Nota Fiscal</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Série</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Localizador</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Remessa Armazém</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Rec. Físico</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Rec. Fiscal</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Código de Entrega</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Transportadora</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">SKU Online</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">EAN Tributário</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Multicanalidade</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Categoria Plano</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Diretoria</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Produto XD</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Valor da Agenda</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Valor c/ Estorno LN</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Valor c/ Estorno BI</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Data Rec. Agenda</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Hora Rec. Agenda</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Devolução</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Status</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Login</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">No Show</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Código Transportadora</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Tipo Identificador Fiscal</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">CNPJ Transportadora</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Nome Transportadora</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Tipo de Compra</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Tipo Depósito</MudTh>
+                <MudTh Style="font-weight: 600; font-size:14px;height:25px;background: linear-gradient(135deg, #764ba2 100%, #764ba2 100%); #764ba2;padding:5px">Doca Descarga</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+              @*   <MudTd DataLabel="Armazem" Style="font-weight:600; font-size:12px">@context.Armazem</MudTd> *@
+                <MudTd DataLabel="Armazém" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Armazem</MudTd>
+                <MudTd DataLabel="Senha" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Senha</MudTd>
+                <MudTd DataLabel="Status Senha" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.StatusSenha</MudTd>
+                <MudTd DataLabel="BOSS" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.BOSS</MudTd>
+                <MudTd DataLabel="Fornecedor" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Fornecedor</MudTd>
+                <MudTd DataLabel="Razão Social" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.RazaoSocial</MudTd>
+                <MudTd DataLabel="Doca" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Doca</MudTd>
+                <MudTd DataLabel="Data Agenda" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DataAgenda?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Placa Veículo" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.PlacaVeiculo</MudTd>
+                <MudTd DataLabel="Data Chegada" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DataChegada?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Hora Chegada" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.HoraChegada</MudTd>
+                <MudTd DataLabel="Data Lançamento" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DataLancamento?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Hora Lançamento" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.HoraLancamento</MudTd>
+                <MudTd DataLabel="Data Envio BOSS" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DataEnvioBOSS?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Hora Envio BOSS" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.HoraEnvioBOSS</MudTd>
+                <MudTd DataLabel="Data Chamada" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DataChamada?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Hora Chamada" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.HoraChamada</MudTd>
+                <MudTd DataLabel="Data Aprovação" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DataAprovacao?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Hora Aprovação" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.HoraAprovacao</MudTd>
+                <MudTd DataLabel="Pedido" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Pedido</MudTd>
+                <MudTd DataLabel="Linha" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Linha</MudTd>
+                <MudTd DataLabel="CNPJ PN Expedidor" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.CnpjPnExpedidor</MudTd>
+                <MudTd DataLabel="Companhia" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Companhia</MudTd>
+                <MudTd DataLabel="Item SKU" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.ItemSKU</MudTd>
+                <MudTd DataLabel="Descrição do Item" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DescricaoItem</MudTd>
+                <MudTd DataLabel="Item Fornecedor" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.ItemFornecedor</MudTd>
+                <MudTd DataLabel="Qtd. Agendada" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.QtdAgendada</MudTd>
+                <MudTd DataLabel="Qtd. Recebida" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.QtdRecebida</MudTd>
+                <MudTd DataLabel="Preço" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Preco</MudTd>
+                <MudTd DataLabel="Nota Fiscal" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.NotaFiscal</MudTd>
+                <MudTd DataLabel="Série" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Serie</MudTd>
+                <MudTd DataLabel="Localizador" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Localizador</MudTd>
+                <MudTd DataLabel="Remessa Armazém" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.RemessaArmazem</MudTd>
+                <MudTd DataLabel="Rec. Físico" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.RecFisico</MudTd>
+                <MudTd DataLabel="Rec. Fiscal" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.RecFiscal</MudTd>
+                <MudTd DataLabel="Código de Entrega" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.CodigoEntrega</MudTd>
+                <MudTd DataLabel="Transportadora" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Transportadora</MudTd>
+                <MudTd DataLabel="SKU Online" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.SKUOnline</MudTd>
+                <MudTd DataLabel="EAN Tributário" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.EanTributario</MudTd>
+                <MudTd DataLabel="Multicanalidade" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Multicanalidade</MudTd>
+                <MudTd DataLabel="Categoria Plano" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.CategoriaPlano</MudTd>
+                <MudTd DataLabel="Diretoria" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Diretoria</MudTd>
+                <MudTd DataLabel="Produto XD" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.ProdutoXD</MudTd>
+                <MudTd DataLabel="Valor da Agenda" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.ValorAgenda</MudTd>
+                <MudTd DataLabel="Valor c/ Estorno LN" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.ValorComEstornoLN</MudTd>
+                <MudTd DataLabel="Valor c/ Estorno BI" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.ValorComEstornoBI</MudTd>
+                <MudTd DataLabel="Data Rec. Agenda" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DataRecAgenda?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Hora Rec. Agenda" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.HoraRecAgenda</MudTd>
+                <MudTd DataLabel="Devolução" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Devolucao</MudTd>
+                <MudTd DataLabel="Status" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Status</MudTd>
+                <MudTd DataLabel="Login" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.Login</MudTd>
+                <MudTd DataLabel="No Show" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.NoShow</MudTd>
+                <MudTd DataLabel="Código Transportadora" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.CodigoTransportadora</MudTd>
+                <MudTd DataLabel="Tipo Identificador Fiscal" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.TipoIdentificadorFiscal</MudTd>
+                <MudTd DataLabel="CNPJ Transportadora" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.CnpjTransportadora</MudTd>
+                <MudTd DataLabel="Nome Transportadora" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.NomeTransportadora</MudTd>
+                <MudTd DataLabel="Tipo de Compra" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.TipoCompra</MudTd>
+                <MudTd DataLabel="Tipo Depósito" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.TipoDeposito</MudTd>
+                <MudTd DataLabel="Doca Descarga" Style="font-weight: 300; font-size:12px;height:15px;padding:5px">@context?.DocaDescarga</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="Close">Fechar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public List<BaseLNcs> Produtos { get; set; } = new();
+    private string filtro = "";
+
+    private IEnumerable<BaseLNcs> produtosFiltrados => Produtos
+        .Where(p => string.IsNullOrWhiteSpace(filtro)
+                    || (p.Armazem?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+                    || (p.Pedido?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+                    || (p.Status?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false));
+
+    void Close()
+    {
+        //DialogService.Close();
+    }
+}

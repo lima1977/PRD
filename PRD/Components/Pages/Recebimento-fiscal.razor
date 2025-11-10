@@ -1,0 +1,636 @@
+﻿@page "/recebimento-fiscal"
+@using MudBlazor
+@inject IJSRuntime JSRuntime
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <!-- Header Card -->
+    <MudCard Elevation="8" Class="mb-4" Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="12" md="8">
+                    <MudText Typo="Typo.h3" Color="Color.Surface" Class="mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Receipt" Class="mr-2" />
+                        Recebimento Fiscal
+                    </MudText>
+                    <MudText Typo="Typo.body1" Color="Color.Surface">
+                        Usuário: JD
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="d-flex align-center justify-end">
+                    <MudPaper Class="pa-4" Style="background: rgba(255,255,255,0.2);">
+                        <MudText Typo="Typo.caption" Color="Color.Surface">Total de Lançamentos</MudText>
+                        <MudText Typo="Typo.h3" Color="Color.Surface" Class="font-weight-bold">@totalLancamentos</MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+
+    <!-- Formulário Principal -->
+    <MudCard Elevation="4" Class="mb-4">
+        <MudCardHeader Style="background: linear-gradient(to right, #f8f9fa, #e9ecef);">
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6" Color="Color.Primary">
+                    <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Class="mr-2" />
+                    Dados do Transporte
+                </MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" Size="Size.Small">
+                    Buscar ID
+                </MudButton>
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid>
+                <!-- Número Controle -->
+                <MudItem xs="12" md="2">
+                    <MudTextField 
+                        Label="Número Controle" 
+                        @bind-Value="numeroControle"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Tag" />
+                </MudItem>
+
+                <!-- Data e Hora Chegada -->
+                <MudItem xs="12" md="3">
+                    <MudDatePicker 
+                        Label="Data Chegada" 
+                        @bind-Date="dataChegada" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary"
+                        Editable="true" />
+                </MudItem>
+                <MudItem xs="12" md="2">
+                    <MudTimePicker 
+                        Label="Hora Chegada" 
+                        @bind-Time="horaChegada" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary" />
+                </MudItem>
+
+                <!-- Transportadora -->
+                <MudItem xs="12" md="5">
+                    <MudTextField 
+                        Label="Transportadora" 
+                        @bind-Value="transportadora"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Business" />
+                </MudItem>
+
+                <!-- Nome do Motorista -->
+                <MudItem xs="12" md="12">
+                    <MudTextField 
+                        Label="Nome do Motorista" 
+                        @bind-Value="nomeMotorista"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Person" />
+                </MudItem>
+
+                <!-- Telefone, Placas -->
+                <MudItem xs="12" md="3">
+                    <MudTextField 
+                        Label="Telefone" 
+                        @bind-Value="telefone"
+                        Variant="Variant.Outlined"
+                        Mask="@(new PatternMask("(00) 00000-0000"))"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Phone" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudTextField 
+                        Label="Placa da Carreta" 
+                        @bind-Value="placaCarreta"
+                        Variant="Variant.Outlined"
+                        Mask="@(new PatternMask("XXX-0X00"))"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.DirectionsCar" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudTextField 
+                        Label="Placa do Cavalo" 
+                        @bind-Value="placaCavalo"
+                        Variant="Variant.Outlined"
+                        Mask="@(new PatternMask("XXX-0X00"))"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.DirectionsCar" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudTextField 
+                        Label="RG" 
+                        @bind-Value="rg"
+                        Variant="Variant.Outlined"
+                        Mask="@(new PatternMask("00.000.000-X"))"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Badge" />
+                </MudItem>
+
+                <!-- CPF e E-mail -->
+                <MudItem xs="12" md="4">
+                    <MudTextField 
+                        Label="CPF" 
+                        @bind-Value="cpf"
+                        Variant="Variant.Outlined"
+                        Mask="@(new PatternMask("000.000.000-00"))"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Fingerprint" />
+                </MudItem>
+                <MudItem xs="12" md="8">
+                    <MudTextField 
+                        Label="E-mail" 
+                        @bind-Value="email"
+                        Variant="Variant.Outlined"
+                        InputType="InputType.Email"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Email" />
+                </MudItem>
+
+                <!-- Divider -->
+                <MudItem xs="12">
+                    <MudDivider Class="my-2" />
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mt-2 mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Assignment" Class="mr-2" />
+                        Dados Fiscais
+                    </MudText>
+                </MudItem>
+
+                <!-- Dados Fiscais -->
+                <MudItem xs="12" md="4">
+                    <MudTextField 
+                        Label="Fornecedor" 
+                        @bind-Value="fornecedor"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Store" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField 
+                        Label="Nota Fiscal" 
+                        @bind-Value="notaFiscal"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Description" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect 
+                        T="string" 
+                        Label="Tipo Depósito" 
+                        @bind-Value="tipoDeposito"
+                        Variant="Variant.Outlined"
+                        AdornmentIcon="@Icons.Material.Filled.Category"
+                        AdornmentColor="Color.Primary">
+                        <MudSelectItem Value="@("Produto Acabado")">Produto Acabado</MudSelectItem>
+                        <MudSelectItem Value="@("Matéria Prima")">Matéria Prima</MudSelectItem>
+                        <MudSelectItem Value="@("Embalagem")">Embalagem</MudSelectItem>
+                        <MudSelectItem Value="@("Outros")">Outros</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudSelect 
+                        T="string" 
+                        Label="Divergências" 
+                        @bind-Value="divergencias"
+                        Variant="Variant.Outlined"
+                        AdornmentIcon="@Icons.Material.Filled.Warning"
+                        AdornmentColor="Color.Warning">
+                        <MudSelectItem Value="@("Sem Divergências")">Sem Divergências</MudSelectItem>
+                        <MudSelectItem Value="@("Avaria")">Avaria</MudSelectItem>
+                        <MudSelectItem Value="@("Quantidade")">Quantidade</MudSelectItem>
+                        <MudSelectItem Value="@("Produto Errado")">Produto Errado</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect 
+                        T="string" 
+                        Label="Status Fiscal" 
+                        @bind-Value="statusFiscal"
+                        Variant="Variant.Outlined"
+                        AdornmentIcon="@Icons.Material.Filled.CheckCircle"
+                        AdornmentColor="Color.Success">
+                        <MudSelectItem Value="@("Aguardando")">
+                            <MudChip T ="string" Color="Color.Warning" Size="Size.Small">Aguardando</MudChip>
+                        </MudSelectItem>
+                        <MudSelectItem Value="@("Em Conferência")">
+                            <MudChip T="string" Color="Color.Info" Size="Size.Small">Em Conferência</MudChip>
+                        </MudSelectItem>
+                        <MudSelectItem Value="@("Finalizado")">
+                            <MudChip T="string" Color="Color.Success" Size="Size.Small">Finalizado</MudChip>
+                        </MudSelectItem>
+                        <MudSelectItem Value="@("Pendente")">
+                            <MudChip T="string" Color="Color.Error" Size="Size.Small">Pendente</MudChip>
+                        </MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField 
+                        Label="Senha" 
+                        @bind-Value="senha"
+                        Variant="Variant.Outlined"
+                        InputType="InputType.Password"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Lock" />
+                </MudItem>
+
+                <!-- Datas e Horas de Lançamento -->
+                <MudItem xs="12" md="3">
+                    <MudTextField 
+                        Label="Qtde NF" 
+                        @bind-Value="qtdeNF"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Numbers" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudDatePicker 
+                        Label="Data Lançamento" 
+                        @bind-Date="dataLancamento" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" md="2">
+                    <MudTimePicker 
+                        Label="Hora Envio" 
+                        @bind-Time="horaEnvio" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField 
+                        Label="Qtde Pçs" 
+                        @bind-Value="qtdePcs"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Inventory" />
+                </MudItem>
+
+                <!-- Categorias -->
+                <MudItem xs="12" md="6">
+                    <MudSelect 
+                        T="string" 
+                        Label="Categorias" 
+                        @bind-Value="categorias"
+                        Variant="Variant.Outlined"
+                        AdornmentIcon="@Icons.Material.Filled.Label"
+                        AdornmentColor="Color.Primary">
+                        <MudSelectItem Value="@("Alimentos")">Alimentos</MudSelectItem>
+                        <MudSelectItem Value="@("Bebidas")">Bebidas</MudSelectItem>
+                        <MudSelectItem Value="@("Eletrônicos")">Eletrônicos</MudSelectItem>
+                        <MudSelectItem Value="@("Têxtil")">Têxtil</MudSelectItem>
+                        <MudSelectItem Value="@("Outros")">Outros</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudDatePicker 
+                        Label="Data Chamada" 
+                        @bind-Date="dataChamada" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudTimePicker 
+                        Label="Hora Retorno" 
+                        @bind-Time="horaRetorno" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary" />
+                </MudItem>
+
+                <!-- Hora Hora Chamada -->
+                <MudItem xs="12" md="12">
+                    <MudTimePicker 
+                        Label="Hora Hora Chamada" 
+                        @bind-Time="horaHoraChamada" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary" />
+                </MudItem>
+
+                <!-- Observações -->
+                <MudItem xs="12">
+                    <MudTextField 
+                        Label="Observações" 
+                        @bind-Value="observacoes"
+                        Variant="Variant.Outlined"
+                        Lines="4"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Notes" />
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions Class="pb-4 px-4">
+            <MudButton 
+                Variant="Variant.Filled" 
+                Color="Color.Success" 
+                StartIcon="@Icons.Material.Filled.Save"
+                Size="Size.Large"
+                OnClick="SalvarDados"
+                Class="px-8">
+                Salvar
+            </MudButton>
+            <MudButton 
+                Variant="Variant.Filled" 
+                Color="Color.Primary" 
+                StartIcon="@Icons.Material.Filled.Edit"
+                Size="Size.Large"
+                Class="px-8">
+                Alterar
+            </MudButton>
+            <MudButton 
+                Variant="Variant.Filled" 
+                Color="Color.Warning" 
+                StartIcon="@Icons.Material.Filled.Clear"
+                Size="Size.Large"
+                OnClick="LimparFormulario"
+                Class="px-8">
+                Limpar
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+
+    <!-- Filtro de Consulta -->
+    <MudCard Elevation="4">
+        <MudCardHeader Style="background: linear-gradient(to right, #f8f9fa, #e9ecef);">
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6" Color="Color.Primary">
+                    <MudIcon Icon="@Icons.Material.Filled.FilterList" Class="mr-2" />
+                    Filtro de Consulta
+                </MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid Class="mb-4">
+                <MudItem xs="12" md="3">
+                    <MudDatePicker 
+                        Label="Data Consulta" 
+                        @bind-Date="dataConsulta" 
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" md="7">
+                    <MudTextField 
+                        Label="Buscar" 
+                        @bind-Value="busca"
+                        Variant="Variant.Outlined"
+                        Adornment="Adornment.End"
+                        AdornmentIcon="@Icons.Material.Filled.Search"
+                        Placeholder="NF, Motorista, Placa, Fornecedor..." />
+                </MudItem>
+                <MudItem xs="12" md="2" Class="d-flex align-end">
+                    <MudButton 
+                        Variant="Variant.Filled" 
+                        Color="Color.Primary" 
+                        StartIcon="@Icons.Material.Filled.Search"
+                        FullWidth="true"
+                        Size="Size.Large">
+                        Buscar
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+
+            <!-- Tabela de Lançamentos Fiscais -->
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">Lançamentos Fiscais</MudText>
+            <MudTable 
+                Items="@lancamentosFiscais" 
+                Hover="true" 
+                Striped="true" 
+                Bordered="true"
+                Dense="false"
+                Elevation="0">
+                <HeaderContent>
+                    <MudTh>Data</MudTh>
+                    <MudTh>Hora</MudTh>
+                    <MudTh>Motorista</MudTh>
+                    <MudTh>Transportadora</MudTh>
+                    <MudTh>NF</MudTh>
+                    <MudTh>Fornecedor</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh Style="text-align: center;">Ações</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Data">@context.Data</MudTd>
+                    <MudTd DataLabel="Hora">@context.Hora</MudTd>
+                    <MudTd DataLabel="Motorista">@context.Motorista</MudTd>
+                    <MudTd DataLabel="Transportadora">@context.Transportadora</MudTd>
+                    <MudTd DataLabel="NF">@context.NotaFiscal</MudTd>
+                    <MudTd DataLabel="Fornecedor">@context.Fornecedor</MudTd>
+                    <MudTd DataLabel="Status">
+                        @if (context.Status == "Finalizado")
+                        {
+                            <MudChip T="string" Color="Color.Success" Size="Size.Small">Finalizado</MudChip>
+                        }
+                        else if (context.Status == "Em Conferência")
+                        {
+                            <MudChip T="string" Color="Color.Info" Size="Size.Small">Em Conferência</MudChip>
+                        }
+                        else if (context.Status == "Pendente")
+                        {
+                            <MudChip T="string" Color="Color.Error" Size="Size.Small">Pendente</MudChip>
+                        }
+                        else
+                        {
+                            <MudChip T="string" Color="Color.Warning" Size="Size.Small">Aguardando</MudChip>
+                        }
+                    </MudTd>
+                    <MudTd DataLabel="Ações" Style="text-align: center;">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditarRegistro(context))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Info" Size="Size.Small" OnClick="@(() => ImprimirRegistro(context))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => ExcluirRegistro(context))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    // Dados Transporte
+    private string numeroControle = "";
+    private DateTime? dataChegada = DateTime.Now;
+    private TimeSpan? horaChegada = DateTime.Now.TimeOfDay;
+    private string transportadora = "";
+    private string nomeMotorista = "";
+    private string telefone = "";
+    private string placaCarreta = "";
+    private string placaCavalo = "";
+    private string rg = "";
+    private string cpf = "";
+    private string email = "";
+
+    // Dados Fiscais
+    private string fornecedor = "";
+    private string notaFiscal = "";
+    private string tipoDeposito = "";
+    private string divergencias = "Sem Divergências";
+    private string statusFiscal = "Aguardando";
+    private string senha = "";
+    private string qtdeNF = "";
+    private DateTime? dataLancamento = DateTime.Now;
+    private TimeSpan? horaEnvio = DateTime.Now.TimeOfDay;
+    private string qtdePcs = "";
+    private string categorias = "";
+    private DateTime? dataChamada = DateTime.Now;
+    private TimeSpan? horaRetorno;
+    private TimeSpan? horaHoraChamada;
+    private string observacoes = "";
+
+    // Consulta
+    private DateTime? dataConsulta = DateTime.Now;
+    private string busca = "";
+    private int totalLancamentos = 3;
+
+    private List<LancamentoFiscal> lancamentosFiscais = new()
+    {
+        new LancamentoFiscal { Data = "10/11/2025", Hora = "08:00", Motorista = "José Santos", Transportadora = "Rápida Express", NotaFiscal = "12345", Fornecedor = "Fornecedor A", Status = "Finalizado" },
+        new LancamentoFiscal { Data = "10/11/2025", Hora = "09:30", Motorista = "Maria Silva", Transportadora = "Trans Brasil", NotaFiscal = "12346", Fornecedor = "Fornecedor B", Status = "Em Conferência" },
+        new LancamentoFiscal { Data = "10/11/2025", Hora = "10:15", Motorista = "Carlos Oliveira", Transportadora = "Log Master", NotaFiscal = "12347", Fornecedor = "Fornecedor C", Status = "Aguardando" }
+    };
+
+    private void SalvarDados()
+    {
+        // Lógica para salvar dados
+    }
+
+    private void LimparFormulario()
+    {
+        numeroControle = "";
+        nomeMotorista = "";
+        telefone = "";
+        placaCarreta = "";
+        placaCavalo = "";
+        rg = "";
+        cpf = "";
+        email = "";
+        transportadora = "";
+        fornecedor = "";
+        notaFiscal = "";
+        tipoDeposito = "";
+        divergencias = "Sem Divergências";
+        statusFiscal = "Aguardando";
+        senha = "";
+        qtdeNF = "";
+        qtdePcs = "";
+        categorias = "";
+        observacoes = "";
+    }
+
+    private void EditarRegistro(LancamentoFiscal registro)
+    {
+        nomeMotorista = registro.Motorista;
+        transportadora = registro.Transportadora;
+        notaFiscal = registro.NotaFiscal;
+        fornecedor = registro.Fornecedor;
+        statusFiscal = registro.Status;
+    }
+
+    private async Task ImprimirRegistro(LancamentoFiscal registro)
+    {
+        var dataHoraAtual = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        var statusClass = registro.Status.ToLower().Replace(" ", "-");
+        
+        var html = @"
+<html>
+<head>
+    <title>Comprovante Recebimento Fiscal</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0; color: #667eea; }
+        .info-row { display: flex; margin-bottom: 10px; }
+        .info-label { font-weight: bold; width: 150px; }
+        .info-value { flex: 1; }
+        .section { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ccc; }
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+        .status { display: inline-block; padding: 5px 15px; border-radius: 15px; font-weight: bold; color: white; }
+        .status-finalizado { background-color: #4caf50; }
+        .status-em-conferência { background-color: #2196f3; }
+        .status-pendente { background-color: #f44336; }
+        .status-aguardando { background-color: #ff9800; }
+        @media print { body { margin: 0; } }
+    </style>
+</head>
+<body>
+    <div class='header'>
+        <h1>COMPROVANTE DE RECEBIMENTO FISCAL</h1>
+        <p>Controle de Entrada de Mercadorias</p>
+    </div>
+    
+    <div class='section'>
+        <h3>Informações do Recebimento</h3>
+        <div class='info-row'>
+            <span class='info-label'>Data:</span>
+            <span class='info-value'>" + registro.Data + @"</span>
+        </div>
+        <div class='info-row'>
+            <span class='info-label'>Hora:</span>
+            <span class='info-value'>" + registro.Hora + @"</span>
+        </div>
+        <div class='info-row'>
+            <span class='info-label'>Nota Fiscal:</span>
+            <span class='info-value'>" + registro.NotaFiscal + @"</span>
+        </div>
+        <div class='info-row'>
+            <span class='info-label'>Status:</span>
+            <span class='info-value'>
+                <span class='status status-" + statusClass + "'>" + registro.Status + @"</span>
+            </span>
+        </div>
+    </div>
+
+    <div class='section'>
+        <h3>Dados do Transporte</h3>
+        <div class='info-row'>
+            <span class='info-label'>Motorista:</span>
+            <span class='info-value'>" + registro.Motorista + @"</span>
+        </div>
+        <div class='info-row'>
+            <span class='info-label'>Transportadora:</span>
+            <span class='info-value'>" + registro.Transportadora + @"</span>
+        </div>
+    </div>
+
+    <div class='section'>
+        <h3>Dados Fiscais</h3>
+        <div class='info-row'>
+            <span class='info-label'>Fornecedor:</span>
+            <span class='info-value'>" + registro.Fornecedor + @"</span>
+        </div>
+    </div>
+
+    <div class='footer'>
+        <p>Documento gerado em " + dataHoraAtual + @"</p>
+        <p>Sistema de Recebimento Fiscal - Usuário: JD</p>
+    </div>
+
+    <script>
+        window.onload = function() { 
+            window.print(); 
+        }
+    </script>
+</body>
+</html>";
+
+        var htmlEscaped = html.Replace("'", "\\'").Replace("\n", "\\n").Replace("\r", "");
+        
+        await JSRuntime.InvokeVoidAsync("eval", 
+            "var w = window.open('', '_blank'); w.document.write('" + htmlEscaped + "'); w.document.close();");
+    }
+
+    private void ExcluirRegistro(LancamentoFiscal registro)
+    {
+        lancamentosFiscais.Remove(registro);
+        totalLancamentos = lancamentosFiscais.Count;
+    }
+
+    public class LancamentoFiscal
+    {
+        public string Data { get; set; }
+        public string Hora { get; set; }
+        public string Motorista { get; set; }
+        public string Transportadora { get; set; }
+        public string NotaFiscal { get; set; }
+        public string Fornecedor { get; set; }
+        public string Status { get; set; }
+    }
+}

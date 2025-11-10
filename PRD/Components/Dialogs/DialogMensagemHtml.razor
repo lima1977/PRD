@@ -1,0 +1,29 @@
+﻿@inject MudBlazor.IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="2" Class="pa-3">
+            <MudText Typo="Typo.h6" Color="Color.Error">@Titulo</MudText>
+            <MudDivider />
+            <MudText Typo="Typo.body1" HtmlContent="@((MarkupString)MensagemHtml)" />
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudStack Class="justify-end pa-2" Direction="Row">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Fechar">
+                OK, Entendido
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public string Titulo { get; set; } = string.Empty;
+    [Parameter] public string MensagemHtml { get; set; } = string.Empty;
+
+    private void Fechar() => MudDialog?.Close();
+}
+
