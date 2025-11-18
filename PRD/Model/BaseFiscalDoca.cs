@@ -1,12 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PRD.Model
 {
-    [Table("BaseLN")]
-    public class BaseLNcs
+    [Table("BaseDocaFiscal")]
+    public class BaseFiscalDoca
     {
-        public int Id { get; set; }
 
+        [Key] // Marca como chave primária
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Autoincremento
+        public int Id { get; set; }
+ 
         public string? Armazem { get; set; }
         public string? Senha { get; set; }
         public string? StatusSenha { get; set; }
@@ -38,8 +42,8 @@ namespace PRD.Model
         public decimal? Preco { get; set; }
         public string? NotaFiscal { get; set; }
         public string? Serie { get; set; }
-        public string? Localizador { get; set; } 
-        public string? RemessaArmazem { get; set; } 
+        public string? Localizador { get; set; }
+        public string? RemessaArmazem { get; set; }
         public string? RecFisico { get; set; }
         public string? RecFiscal { get; set; }
         public string? CodigoEntrega { get; set; }
@@ -49,7 +53,7 @@ namespace PRD.Model
         public string? Multicanalidade { get; set; }
         public string? CategoriaPlano { get; set; }
         public string? Diretoria { get; set; }
-        public string?   ProdutoXD { get; set; }
+        public string? ProdutoXD { get; set; }
         public decimal? ValorAgenda { get; set; }
         public decimal? ValorComEstornoLN { get; set; }
         public decimal? ValorComEstornoBI { get; set; }
@@ -66,6 +70,10 @@ namespace PRD.Model
         public string? TipoCompra { get; set; }
         public string? TipoDeposito { get; set; }
         public string? DocaDescarga { get; set; }
+
+
+
+
 
 
     }

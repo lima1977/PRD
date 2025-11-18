@@ -6,13 +6,16 @@ namespace PRD.Intefaces
     {
         Task<bool> AdicionarLoteAsync(List<BaseLNcs> produtos);
         Task<List<BaseLNcs>> ObterTodosAsync();
-
-        //----------------------------------
-
         Task<bool> AtualizarAsync(BaseLNcs registro);
+      
+
         Task<bool> DeletarAsync(int id);
 
+        Task<List<BaseFiscalDoca>> ObterFiscalAsync();
 
         Task<List<BaseLNcs>> ObterTodosAsync(int page, int pageSize);
+
+
+
     }
 }

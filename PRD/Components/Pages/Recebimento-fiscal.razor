@@ -2,10 +2,12 @@
 @using MudBlazor
 @using PRD.Intefaces
 @using PRD.Model
+@using PRD.Services
+@inject ISnackbar Snackbar
 @inject IJSRuntime JSRuntime
 @inject IBaseLNcsService BaseLNcsService
-@inject ISnackbar Snackbar
-
+@inject IBaseFiscalDocaService BaseFiscalDocaService
+@inject ISnackbar Snack
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="mt-2">
     <!-- Compact Header -->
     <MudPaper Elevation="0" Class="mb-3 pa-4" Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px;">
@@ -20,88 +22,91 @@
                 </div>
             </MudItem>
             <MudItem xs="12" md="6" Class="d-flex align-center justify-end">
-                <MudChip T = "string" Color="Color.Surface" Icon="@Icons.Material.Filled.Inventory" Size="Size.Large">
-                    <b>@totalLancamentos</b> Lançamentos
+                <MudChip T="string" Color="Color.Surface" Icon="@Icons.Material.Filled.Inventory" Size="Size.Large">
+                    <b>@totalLancamentos.ToString("N0")</b> | Lançamentos
                 </MudChip>
             </MudItem>
         </MudGrid>
-
     </MudPaper>
-       <MudPaper Elevation="0" Height="60px" Class="mb-3 pa-3" Style=" border-radius: 16px">
+
+    <MudPaper Elevation="0" Height="65px" Class="mb-3 pa-3" Style=" border-radius: 16px">
         <MudGrid>
-            <MudItem xs="12" md="12" Class="d-flex align-center justify-content-center m-2">
-
-             <MudIcon Icon="@Icons.Material.Filled.Favorite" Title="Favorite" />
-            <MudIcon Icon="@Icons.Material.Filled.Api" Title="API" />
-            <MudIcon Icon="@Icons.Material.Filled.AddCircle" Title="Add" />
-            <MudIcon Icon="@Icons.Custom.Brands.GitHub" Title="GitHub" />
-            <MudIcon Icon="@Icons.Custom.Brands.Google" Title="Google" />
-            <MudIcon Icon="@Icons.Custom.Brands.Reddit" Title="Reddit" />
-                        </MudItem>
-
+            <MudItem xs="12" sm="6" Class="d-flex justify-content-start">
+                <MudText Color="Color.Surface" Style="opacity: 0.9; font-weight:700; font-size:15px">Informações rápidas</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" Class="d-flex align-content-end justify-content-end">
+                <MudIconButton Icon="@Icons.Material.Filled.FireTruck" Title="API" Variant="Variant.Text" Color="Color.Primary" Size="Size.Medium" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="API" Variant="Variant.Text" Color="Color.Primary" Size="Size.Medium" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="API" Variant="Variant.Text" Color="Color.Primary" Size="Size.Medium" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="API" Variant="Variant.Text" Color="Color.Primary" Size="Size.Medium" />
+            </MudItem>
         </MudGrid>
     </MudPaper>
+
     <MudGrid>
         <!-- Left Panel - Formulário -->
         <MudItem xs="12" lg="8">
             <MudPaper Elevation="2" Class="pa-4" Style="border-radius: 16px; height: 100%;">
                 <!-- Tabs para organizar informações -->
-                <MudTabs Elevation="0" Rounded="true" Color="Color.Primary" Position="Position.Top" PanelClass="pa-4">
-                    
+                <MudTabs Elevation="0" Rounded="false" Color="Color.Primary" Position="Position.Top" PanelClass="pa-4">
+
                     <!-- Tab 1: Dados do Transporte -->
                     <MudTabPanel Text="Transporte" Icon="@Icons.Material.Filled.LocalShipping">
                         <MudGrid Spacing="2">
                             <!-- Autocomplete para Número de Controle -->
                             <MudItem xs="12" sm="6">
-                                <MudAutocomplete 
-                                    T="BaseLNcs" 
-                                    Label="Número Controle (ID)" 
-                                    @bind-Value="registroSelecionado"
-                                    SearchFunc="@BuscarPorNumeroControle"
-                                    ToStringFunc="@(e => e?.Id.ToString())"
-                                    Variant="Variant.Filled" 
-                                    Dense="true" 
-                                    Margin="Margin.Dense"
-                                    Adornment="Adornment.Start" 
-                                    AdornmentIcon="@Icons.Material.Filled.Tag"
-                                    ResetValueOnEmptyText="true"
-                                    CoerceText="true"
-                                    CoerceValue="true"
-                                    DebounceInterval="300"
-                                    OnBlur="@CarregarDadosRegistro">
+                                <MudAutocomplete T="BaseLNcs"
+                                                 Label="Número Controle (ID)"
+                                                 @bind-Value="registroSelecionado"
+                                                 SearchFunc="@BuscarPorNumeroControle"
+                                                 ToStringFunc="@(e => e?.Id.ToString())"
+                                                 Variant="Variant.Filled"
+                                                 Dense="true"
+                                                 Margin="Margin.Dense"
+                                                 Adornment="Adornment.Start"
+                                                 AdornmentIcon="@Icons.Material.Filled.Tag"
+                                                 ResetValueOnEmptyText="true"
+                                                 CoerceText="true"
+                                                 CoerceValue="true"
+                                                 DebounceInterval="300"
+                                                 OnBlur="@CarregarDadosRegistro">
                                     <ItemTemplate Context="item">
                                         <MudText Typo="Typo.body2">ID: @item.Id - @item.Fornecedor</MudText>
                                         <MudText Typo="Typo.caption">NF: @item.NotaFiscal • @item.DataChegada?.ToString("dd/MM/yyyy")</MudText>
                                     </ItemTemplate>
                                 </MudAutocomplete>
                             </MudItem>
-                            
+
                             <MudItem xs="6" sm="3">
                                 <MudDatePicker Label="Data" @bind-Date="dataChegada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
                             </MudItem>
                             <MudItem xs="6" sm="3">
                                 <MudTimePicker Label="Hora" @bind-Time="horaChegada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
                             </MudItem>
-                            
+
                             <MudItem xs="12" sm="6">
-                                <MudTextField Label="Transportadora" @bind-Value="transportadora" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Business" ReadOnly="true" />
+                                <MudTextField Label="Transportadora" @bind-Value="transportadora" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Business" ReadOnly="false" />
                             </MudItem>
                             <MudItem xs="12" sm="6">
                                 <MudTextField Label="Código Transportadora" @bind-Value="codigoTransportadora" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
                             </MudItem>
-                            
+
                             <MudItem xs="12" sm="6">
-                                <MudTextField Label="Nome Transportadora" @bind-Value="nomeTransportadora" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField Label="Nome Transportadora" @bind-Value="nomeTransportadora" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="false" />
                             </MudItem>
                             <MudItem xs="12" sm="6">
                                 <MudTextField Label="CNPJ Transportadora" @bind-Value="cnpjTransportadora" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
                             </MudItem>
-                            
+
                             <MudItem xs="12" sm="6">
                                 <MudTextField Label="Placa Veículo" @bind-Value="placaVeiculo" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Mask="@(new PatternMask("XXX-0X00"))" />
                             </MudItem>
                             <MudItem xs="12" sm="6">
                                 <MudTextField Label="Doca" @bind-Value="doca" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="12">
+                                <MudTextField Label="Observações" @bind-Value="observacao" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px; height:90px" />
                             </MudItem>
                         </MudGrid>
                     </MudTabPanel>
@@ -109,83 +114,83 @@
                     <!-- Tab 2: Dados Fiscais -->
                     <MudTabPanel Text="Fiscal" Icon="@Icons.Material.Filled.Assignment">
                         <MudGrid Spacing="2">
-                            <MudItem xs="12" sm="6">
-                                <MudTextField Label="Fornecedor" @bind-Value="fornecedor" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Store" ReadOnly="true" />
+                            <MudItem xs="12" sm="3">
+                                <MudTextField Label="Fornecedor" @bind-Value="registroSelecionado.Fornecedor" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Store" Style="font-size:13px;" ReadOnly="false" />
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <MudTextField Label="Razão Social" @bind-Value="razaoSocial" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField Label="Razão Social" @bind-Value="razaoSocial" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" ReadOnly="true" />
                             </MudItem>
-                            
+
                             <MudItem xs="6" sm="3">
-                                <MudTextField Label="Nota Fiscal" @bind-Value="notaFiscal" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTextField Label="Série" @bind-Value="serie" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField Label="Nota Fiscal" @bind-Value="notaFiscal" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" ReadOnly="true" />
                             </MudItem>
                             <MudItem xs="6" sm="3">
-                                <MudTextField Label="Qtd Agendada" @bind-Value="qtdAgendada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField Label="Série" @bind-Value="serie" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" ReadOnly="true" />
                             </MudItem>
                             <MudItem xs="6" sm="3">
-                                <MudTextField Label="Qtd Recebida" @bind-Value="qtdRecebida" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
+                                <MudTextField Label="Qtd Agendada" @bind-Value="qtdAgendada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" ReadOnly="true" />
                             </MudItem>
-                            
-                            <MudItem xs="12" sm="6">
-                                <MudTextField Label="Tipo Depósito" @bind-Value="tipoDeposito" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                            <MudItem xs="6" sm="3">
+                                <MudTextField Label="Qtd Recebida" @bind-Value="qtdRecebida" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" />
                             </MudItem>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField Label="Categoria Plano" @bind-Value="categoriaPlano" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+
+                            <MudItem xs="12" sm="3">
+                                <MudTextField Label="Tipo Depósito" @bind-Value="tipoDeposito" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" ReadOnly="true" />
                             </MudItem>
-                            
-                            <MudItem xs="12" sm="6">
-                                <MudTextField Label="Armazém" @bind-Value="armazem" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                            <MudItem xs="12" sm="3">
+                                <MudTextField Label="Categoria Plano" @bind-Value="categoriaPlano" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" ReadOnly="true" />
                             </MudItem>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField Label="Senha" @bind-Value="senha" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
+
+                            <MudItem xs="12" sm="3">
+                                <MudTextField Label="Armazém" @bind-Value="armazem" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" ReadOnly="true" />
                             </MudItem>
-                            
-                            <MudItem xs="12" sm="6">
-                                <MudSelect T="string" Label="Status" @bind-Value="statusFiscal" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense">
+                            <MudItem xs="12" sm="3">
+                                <MudTextField Label="Senha" @bind-Value="senha" Variant="Variant.Filled" Dense="true" Style="font-size:13px;" Margin="Margin.Dense" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="3">
+                                <MudSelect T="string" Label="Status" @bind-Value="statusFiscal" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;">
                                     <MudSelectItem Value="@("Aguardando")">Aguardando</MudSelectItem>
                                     <MudSelectItem Value="@("Em Conferência")">Em Conferência</MudSelectItem>
                                     <MudSelectItem Value="@("Finalizado")">Finalizado</MudSelectItem>
                                     <MudSelectItem Value="@("Pendente")">Pendente</MudSelectItem>
                                 </MudSelect>
                             </MudItem>
+                            <MudItem xs="12" sm="3">
+                                <MudTextField Label="Status Senha" @bind-Value="statusSenha" Variant="Variant.Filled" Dense="true" Style="font-size:13px;" Margin="Margin.Dense" />
+                            </MudItem>
+
+                            <MudItem xs="6" sm="3">
+                                <MudDatePicker Label="Data Lanç." @bind-Date="dataLancamento" Variant="Variant.Filled" Dense="true" Style="font-size:13px;" Margin="Margin.Dense" />
+                            </MudItem>
+                            <MudItem xs="6" sm="3">
+                                <MudTimePicker Label="Hora Lanç." @bind-Time="horaLancamento" Variant="Variant.Filled" Dense="true" Style="font-size:13px;" Margin="Margin.Dense" />
+                            </MudItem>
+                            <MudItem xs="6" sm="3">
+                                <MudDatePicker Label="Data Envio" @bind-Date="dataEnvioBOSS" Variant="Variant.Filled" Dense="true" Style="font-size:13px;" Margin="Margin.Dense" />
+                            </MudItem>
+                            <MudItem xs="6" sm="2">
+                                <MudTimePicker Label="Hora Envio" @bind-Time="horaEnvioBOSS" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" />
+                            </MudItem>
+
+                            <MudItem xs="6" sm="3">
+                                <MudDatePicker Label="Data Chamada" @bind-Date="dataChamada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" />
+                            </MudItem>
+                            <MudItem xs="6" sm="2">
+                                <MudTimePicker Label="Hora Cham." @bind-Time="horaChamada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" />
+                            </MudItem>
+                            <MudItem xs="6" sm="3">
+                                <MudDatePicker Label="Data Aprova." @bind-Date="dataAprovacao" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" />
+                            </MudItem>
+                            <MudItem xs="6" sm="2">
+                                <MudTimePicker Label="Hora Aprova." @bind-Time="horaAprovacao" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" Style="font-size:13px;" />
+                            </MudItem>
+
                             <MudItem xs="12" sm="6">
-                                <MudTextField Label="Status Senha" @bind-Value="statusSenha" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            
-                            <MudItem xs="6" sm="3">
-                                <MudDatePicker Label="Data Lanç." @bind-Date="dataLancamento" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTimePicker Label="Hora Lanç." @bind-Time="horaLancamento" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudDatePicker Label="Data Envio" @bind-Date="dataEnvioBOSS" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTimePicker Label="Hora Envio" @bind-Time="horaEnvioBOSS" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            
-                            <MudItem xs="6" sm="3">
-                                <MudDatePicker Label="Data Chamada" @bind-Date="dataChamada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTimePicker Label="Hora Chamada" @bind-Time="horaChamada" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudDatePicker Label="Data Aprova." @bind-Date="dataAprovacao" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTimePicker Label="Hora Aprova." @bind-Time="horaAprovacao" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" />
-                            </MudItem>
-                            
-                            <MudItem xs="12" sm="6">
-                                <MudTextField Label="Pedido" @bind-Value="pedido" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField Label="Pedido" @bind-Value="pedido" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" Style="font-size:13px;" />
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <MudTextField Label="Localizador" @bind-Value="localizador" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField Label="Localizador" @bind-Value="localizador" Variant="Variant.Filled" Dense="true" Margin="Margin.Dense" ReadOnly="true" Style="font-size:13px;" />
                             </MudItem>
                         </MudGrid>
                     </MudTabPanel>
@@ -244,44 +249,64 @@
                     </MudText>
                     <MudStack Spacing="2">
                         <MudDatePicker Label="Data" @bind-Date="dataConsulta" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense" />
-                        <MudTextField Label="Buscar..." @bind-Value="busca" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense" 
+                        <MudTextField Label="Buscar por NF / ID / Senha..." @bind-Value="busca" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense"
                                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" />
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" StartIcon="@Icons.Material.Filled.Search" OnClick="BuscarRegistros">
                             Buscar
                         </MudButton>
                     </MudStack>
                 </MudPaper>
+
+                <MudPaper Elevation="2" Class="pa-3" Style="border-radius: 16px;">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" /> Outra sessão
+                    </MudText>
+                    <MudStack Spacing="2">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" /> Conteúdo futuro
+                        </MudText>
+                    </MudStack>
+                </MudPaper>
             </MudStack>
         </MudItem>
     </MudGrid>
 
+
     <!-- Tabela de Lançamentos -->
     <MudPaper Elevation="2" Class="mt-3 pa-4" Style="border-radius: 16px;">
         <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">
-            <MudIcon Icon="@Icons.Material.Filled.TableChart" /> Lançamentos Fiscais
+        <MudIcon Icon="@Icons.Material.Filled.TableChart" /> Lançamentos Fiscais
         </MudText>
-        <MudTable Items="@registrosFiltrados" Hover="true" Dense="true" Striped="true" Elevation="0" Loading="@carregando" PageSize="@pageSize">
+        <MudTable Items="@registrosFiscais"
+                  Hover="true"
+                  Dense="true"
+                  Striped="true"
+                  Elevation="0"
+                  Loading="@carregando"
+                  PageSize="@pageSize">
 
             <HeaderContent>
                 <MudTh>ID</MudTh>
                 <MudTh>Data/Hora</MudTh>
+                <MudTh>Hora</MudTh>
                 <MudTh>Fornecedor</MudTh>
                 <MudTh>Transportadora</MudTh>
                 <MudTh>NF</MudTh>
                 <MudTh>Status</MudTh>
                 <MudTh Style="text-align: center;">Ações</MudTh>
             </HeaderContent>
+
             <RowTemplate>
-                <MudTd DataLabel="ID">@context.Id</MudTd>
-                <MudTd DataLabel="Data/Hora">
-                    <MudText Typo="Typo.body2">@context.DataChegada?.ToString("dd/MM/yyyy")</MudText>
-                    <MudText Typo="Typo.caption">@context.HoraChegada?.ToString(@"hh\:mm")</MudText>
-                </MudTd>
-                <MudTd DataLabel="Fornecedor">@context.Fornecedor</MudTd>
-                <MudTd DataLabel="Transportadora">@context.Transportadora</MudTd>
-                <MudTd DataLabel="NF">@context.NotaFiscal</MudTd>
-                <MudTd DataLabel="Status">
-                    <MudChip T="string" Color="@GetStatusColor(context.Status)" Size="Size.Small" Variant="Variant.Filled">@context.Status</MudChip>
+                <MudTd Style="font-size:13px;padding:2px" DataLabel="ID">@context.Id</MudTd>
+                <MudTd Style="font-size:13px;padding:2px" DataLabel="Data/Hora">@context.DataChegada?.ToString("dd/MM/yyyy")</MudTd>
+                <MudTd Style="font-size:13px;padding:2px" DataLabel="Hora">@context.HoraChegada?.ToString(@"hh\:mm")</MudTd>
+                <MudTd Style="font-size:13px;padding:2px" DataLabel="Fornecedor">@context.Fornecedor</MudTd>
+                <MudTd Style="font-size:13px;padding:2px" DataLabel="Transportadora">@context.Transportadora</MudTd>
+                <MudTd Style="font-size:13px;padding:2px" DataLabel="NF">@context.NotaFiscal</MudTd>
+                <MudTd Style="font-size:13px;padding:2px" DataLabel="Status">
+                    <MudChip T="string" Color="@GetStatusColor(context.Status)" Size="Size.Small" Variant="Variant.Filled">
+                        @context.Status
+                    </MudChip>
                 </MudTd>
                 <MudTd DataLabel="Ações" Style="text-align: center;">
                     <MudTooltip Text="Editar">
@@ -293,23 +318,25 @@
                 </MudTd>
             </RowTemplate>
 
-                  <PagerContent>
-                        <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }"
-                                       InfoFormat="{first_item}-{last_item} de {all_items}"
-                                       RowsPerPageString="Linhas por página:" />
-                    </PagerContent>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }"
+                               InfoFormat="{first_item}-{last_item} de {all_items}"
+                               RowsPerPageString="Linhas por página:" />
+            </PagerContent>
 
         </MudTable>
     </MudPaper>
 </MudContainer>
 
 @code {
-    // Lista completa de registros
+    // Listas
     private List<BaseLNcs> todosRegistros = new();
-    private List<BaseLNcs> registrosFiltrados = new();
-    private BaseLNcs? registroSelecionado;
+    private List<BaseFiscalDoca> registrosFiscais = new();
+    // Selecionados
+    private BaseLNcs? registroSelecionado;       
+    private BaseFiscalDoca? RegistroSel;         
     private bool carregando = false;
-     private int pageSize = 50000; // Definido corretamente como 10
+    private int pageSize = 50_000;
     // Campos do formulário
     private DateTime? dataChegada;
     private TimeSpan? horaChegada;
@@ -319,6 +346,7 @@
     private string cnpjTransportadora = "";
     private string placaVeiculo = "";
     private string doca = "";
+    private string observacao = "";
     private string fornecedor = "";
     private string razaoSocial = "";
     private string notaFiscal = "";
@@ -345,7 +373,7 @@
     // Consulta
     private DateTime? dataConsulta = DateTime.Now;
     private string busca = "";
-    
+
     // Estatísticas
     private int totalLancamentos = 0;
     private int finalizados = 0;
@@ -353,199 +381,227 @@
     private int aguardando = 0;
     private int pendentes = 0;
 
+    private bool novoRegistro = true;
+
     protected override async Task OnInitializedAsync()
     {
-       //await CarregarDados();
-
-
-         try
-        {
-            carregando = true;
-            todosRegistros = await BaseLNcsService.ObterTodosAsync(); // Carrega todos os registros
-            totalLancamentos = todosRegistros.Count;
-            AtualizarEstatisticas();
-            CarregarPagina(0); // Carrega a primeira página
-            carregando = false;
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Erro ao carregar dados: {ex.Message}", Severity.Error);
-            carregando = false;
-        }
-
-    }
-      // Função para carregar os dados de uma página específica
-    private void CarregarPagina(int pagina)
-    {
-        registrosFiltrados = todosRegistros.Skip(pagina * pageSize).Take(pageSize).ToList();
+        await CarregarDados();
     }
 
-
-    // private async Task CarregarDados()
-    // {
-    //     try
-    //     {
-    //         carregando = true;
-    //         todosRegistros = await BaseLNcsService.ObterTodosAsync();
-    //         registrosFiltrados = todosRegistros;
-    //         totalLancamentos = todosRegistros.Count;
-    //         AtualizarEstatisticas();
-    //         carregando = false;
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Snackbar.Add($"Erro ao carregar dados: {ex.Message}", Severity.Error);
-    //         carregando = false;
-    //     }
-    // }
-
-    @code {
     private async Task CarregarDados()
     {
         try
         {
             carregando = true;
-            int pagina = 0;  // Página inicial
-            int tamanhoPagina = 100000; // Tamanho da página
-            todosRegistros = await BaseLNcsService.ObterTodosAsync(pagina, tamanhoPagina); // Passando os parâmetros
-            registrosFiltrados = todosRegistros;
+
+            // Carrega base LNcs
+            todosRegistros = await BaseLNcsService.ObterTodosAsync();
             totalLancamentos = todosRegistros.Count;
+
+            // Carrega base fiscal
+            registrosFiscais = await BaseLNcsService.ObterFiscalAsync();
+
             AtualizarEstatisticas();
-            carregando = false;
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Erro ao carregar dados: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
             carregando = false;
         }
     }
-}
-
 
     private void AtualizarEstatisticas()
     {
-        finalizados = todosRegistros.Count(x => x.Status == "Finalizado");
-        emConferencia = todosRegistros.Count(x => x.Status == "Em Conferência");
-        aguardando = todosRegistros.Count(x => x.Status == "Aguardando");
-        pendentes = todosRegistros.Count(x => x.Status == "Pendente");
+        finalizados = registrosFiscais.Count(x => x.Status == "Finalizado");
+        emConferencia = registrosFiscais.Count(x => x.Status == "Em Conferência");
+        aguardando = registrosFiscais.Count(x => x.Status == "Aguardando");
+        pendentes = registrosFiscais.Count(x => x.Status == "Pendente");
     }
 
-
+    // Autocomplete por ID / controle
     private async Task<IEnumerable<BaseLNcs>> BuscarPorNumeroControle(string value, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return todosRegistros.Take(1);
+            return todosRegistros.Take(10);
 
         return todosRegistros
-            .Where(x => x.Id.ToString().Contains(value) ||
-                        (x.Senha?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (x.NotaFiscal?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false))
-            .Take(1);
+            .Where(x =>
+                x.Id.ToString().Contains(value) ||
+                (x.Senha?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (x.NotaFiscal?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false))
+            .Take(20);
     }
+    /// Carrega a partir da seleção no Autocomplete (BaseLNcs) e garante RegistroSel (BaseFiscalDoca)
 
     private void CarregarDadosRegistro()
     {
-        if (registroSelecionado == null) return;
+        if (registroSelecionado == null)
+            return;
 
-        // Carregar todos os campos do registro selecionado
-        dataChegada = registroSelecionado.DataChegada;
-        horaChegada = registroSelecionado.HoraChegada;
-        transportadora = registroSelecionado.Transportadora ?? "";
-        codigoTransportadora = registroSelecionado.CodigoTransportadora ?? "";
-        nomeTransportadora = registroSelecionado.NomeTransportadora ?? "";
-        cnpjTransportadora = registroSelecionado.CnpjTransportadora ?? "";
-        placaVeiculo = registroSelecionado.PlacaVeiculo ?? "";
-        doca = registroSelecionado.Doca ?? "";
-        fornecedor = registroSelecionado.Fornecedor ?? "";
-        razaoSocial = registroSelecionado.RazaoSocial ?? "";
-        notaFiscal = registroSelecionado.NotaFiscal ?? "";
-        serie = registroSelecionado.Serie ?? "";
-        qtdAgendada = registroSelecionado.QtdAgendada;
-        qtdRecebida = registroSelecionado.QtdRecebida;
-        tipoDeposito = registroSelecionado.TipoDeposito ?? "";
-        categoriaPlano = registroSelecionado.CategoriaPlano ?? "";
-        armazem = registroSelecionado.Armazem ?? "";
-        senha = registroSelecionado.Senha ?? "";
-        statusFiscal = registroSelecionado.Status ?? "Aguardando";
-        statusSenha = registroSelecionado.StatusSenha ?? "";
-        dataLancamento = registroSelecionado.DataLancamento;
-        horaLancamento = registroSelecionado.HoraLancamento;
-        dataEnvioBOSS = registroSelecionado.DataEnvioBOSS;
-        horaEnvioBOSS = registroSelecionado.HoraEnvioBOSS;
-        dataChamada = registroSelecionado.DataChamada;
-        horaChamada = registroSelecionado.HoraChamada;
-        dataAprovacao = registroSelecionado.DataAprovacao;
-        horaAprovacao = registroSelecionado.HoraAprovacao;
-        pedido = registroSelecionado.Pedido ?? "";
-        localizador = registroSelecionado.Localizador ?? "";
+        // Procura se já existe um BaseFiscalDoca correspondente para este controle
+        var fiscal = registrosFiscais.FirstOrDefault(f => f.Id == registroSelecionado.Id);
 
+        if (fiscal == null)
+        {
+            novoRegistro = true;
+            RegistroSel = CriarFiscalAPartirDeLNcs(registroSelecionado);
+
+
+
+
+
+
+
+
+        }
+        else
+        {
+            novoRegistro = false;
+            RegistroSel = fiscal;
+        }
+
+        PreencherTelaAPartirDeFiscal();
         Snackbar.Add($"Registro ID {registroSelecionado.Id} carregado com sucesso!", Severity.Success);
     }
-
+    /// Botão "Buscar" (lado direito). Busca na BaseLNcs e monta / encontra o Fiscal.
     private void BuscarRegistros()
     {
         if (string.IsNullOrWhiteSpace(busca))
         {
-            registrosFiltrados = todosRegistros;
-        }
-        else
-        {
-            registrosFiltrados = todosRegistros
-                .Where(x => x.Id.ToString().Contains(busca) ||
-                           (x.Senha?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                           (x.NotaFiscal?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                           (x.Fornecedor?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false))
-                .ToList();
-        }
-        
-        Snackbar.Add($"Encontrados {registrosFiltrados.Count} registros", Severity.Info);
-    }
-
-    private Color GetStatusColor(string? status)
-    {
-        return status switch
-        {
-            "Finalizado" => Color.Success,
-            "Em Conferência" => Color.Info,
-            "Aguardando" => Color.Warning,
-            "Pendente" => Color.Error,
-            _ => Color.Default
-        };
-    }
-
-    private async Task SalvarDados()
-    {
-        if (registroSelecionado == null)
-        {
-            Snackbar.Add("Selecione um registro para salvar!", Severity.Warning);
+            Snackbar.Add("Informe uma Nota Fiscal, ID ou Senha para buscar.", Severity.Warning);
             return;
         }
 
+        var lncs = todosRegistros.FirstOrDefault(x =>
+            x.Id.ToString().Equals(busca, StringComparison.OrdinalIgnoreCase) ||
+            (x.NotaFiscal?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (x.Senha?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false));
+
+        if (lncs == null)
+        {
+            Snackbar.Add("Nenhum registro encontrado para o filtro informado.", Severity.Info);
+            return;
+        }
+
+        registroSelecionado = lncs;
+
+        var fiscal = registrosFiscais.FirstOrDefault(f => f.Id == lncs.Id);
+        if (fiscal == null)
+        {
+            novoRegistro = true;
+            RegistroSel = CriarFiscalAPartirDeLNcs(lncs);
+        }
+        else
+        {
+            novoRegistro = false;
+            RegistroSel = fiscal;
+        }
+
+        PreencherTelaAPartirDeFiscal();
+        Snackbar.Add($"Registro ID {lncs.Id} carregado com sucesso!", Severity.Success);
+    }
+
+    private void PreencherTelaAPartirDeFiscal()
+    {
+        if (RegistroSel == null)
+            return;
+
+        var registrosComMesmoNota1 = todosRegistros.Where(x => x.NotaFiscal == RegistroSel.NotaFiscal).ToList();
+
+        // Garantir que a soma de QtdAgendada seja feita corretamente, considerando null
+        qtdAgendada = registrosComMesmoNota1.Sum(x => x.QtdAgendada ?? 0); // Se QtdAgendada for null, trata como 0
+
+        // Contar quantos registros possuem o mesmo número de NotaFiscal
+        int contadorNotas = registrosComMesmoNota1.Count();
+
+        // Preencher os campos do formulário com os dados do registro
+
+
+
+        dataChegada = RegistroSel.DataChegada;
+        horaChegada = RegistroSel.HoraChegada;
+        transportadora = RegistroSel.Transportadora ?? "";
+        codigoTransportadora = RegistroSel.CodigoTransportadora ?? "";
+        nomeTransportadora = RegistroSel.NomeTransportadora ?? "";
+        cnpjTransportadora = RegistroSel.CnpjTransportadora ?? "";
+        placaVeiculo = RegistroSel.PlacaVeiculo ?? "";
+        doca = RegistroSel.Doca ?? "";
+        fornecedor = RegistroSel.Fornecedor ?? "";
+        razaoSocial = RegistroSel.RazaoSocial ?? "";
+        notaFiscal = RegistroSel.NotaFiscal ?? "";
+        serie = RegistroSel.Serie ?? "";
+        qtdRecebida = RegistroSel.QtdRecebida;
+        tipoDeposito = RegistroSel.TipoDeposito ?? "";
+        categoriaPlano = RegistroSel.CategoriaPlano ?? "";
+        armazem = RegistroSel.Armazem ?? "";
+        senha = RegistroSel.Senha ?? "";
+        statusFiscal = RegistroSel.Status ?? "Aguardando";
+        statusSenha = RegistroSel.StatusSenha ?? "";
+        dataLancamento = RegistroSel.DataLancamento;
+        horaLancamento = RegistroSel.HoraLancamento;
+        dataEnvioBOSS = RegistroSel.DataEnvioBOSS;
+        horaEnvioBOSS = RegistroSel.HoraEnvioBOSS;
+        dataChamada = RegistroSel.DataChamada;
+        horaChamada = RegistroSel.HoraChamada;
+        dataAprovacao = RegistroSel.DataAprovacao;
+        horaAprovacao = RegistroSel.HoraAprovacao;
+        pedido = RegistroSel.Pedido ?? "";
+        localizador = RegistroSel.Localizador ?? "";
+
+        // Exemplo de como você pode mostrar essas informações na tela
+        Snackbar.Add($"Total de Qtd Agendada para a Nota Fiscal {RegistroSel.NotaFiscal}: {qtdAgendada}", Severity.Info);
+        Snackbar.Add($"Número de registros encontrados para a Nota Fiscal {RegistroSel.NotaFiscal}: {contadorNotas}", Severity.Info);
+    }
+    private Color GetStatusColor(string? status)
+        {
+            return status switch
+            {
+                "Finalizado" => Color.Success,
+                "Em Conferência" => Color.Info,
+                "Aguardando" => Color.Warning,
+                "Pendente" => Color.Error,
+                _ => Color.Default
+            };
+        }
+    private async Task SalvarDados()
+        {
+        if (RegistroSel == null)
+        {
+            Snackbar.Add("Nenhum registro fiscal carregado. Busque ou selecione um controle antes de salvar.", Severity.Warning);
+            return;
+        }
         try
         {
-            // Atualizar o registro selecionado com os novos valores
-            registroSelecionado.QtdRecebida = qtdRecebida;
-            registroSelecionado.Status = statusFiscal;
-            registroSelecionado.Senha = senha;
-            registroSelecionado.StatusSenha = statusSenha;
-            registroSelecionado.DataLancamento = dataLancamento;
-            registroSelecionado.HoraLancamento = horaLancamento;
-            registroSelecionado.DataEnvioBOSS = dataEnvioBOSS;
-            registroSelecionado.HoraEnvioBOSS = horaEnvioBOSS;
-            registroSelecionado.DataChamada = dataChamada;
-            registroSelecionado.HoraChamada = horaChamada;
-            registroSelecionado.DataAprovacao = dataAprovacao;
-            registroSelecionado.HoraAprovacao = horaAprovacao;
-            registroSelecionado.PlacaVeiculo = placaVeiculo;
+            // Verificando os dados antes de salvar
+            Console.WriteLine("Dados para salvar: ");
+             //  Console.WriteLine(JsonConvert.SerializeObject(RegistroSel));
 
-            // Chamar o método de atualização do service
-            var sucesso = await BaseLNcsService.AtualizarAsync(registroSelecionado);
-            
+            // Validar dados antes de salvar
+            if (string.IsNullOrEmpty(RegistroSel.Fornecedor))
+            {
+                Snackbar.Add("Fornecedor não pode ser vazio.", Severity.Warning);
+                return;
+            }
+            // Salvar ou atualizar
+            bool sucesso;
+
+            if (novoRegistro)           
+            {
+                
+                sucesso = await BaseFiscalDocaService.AdicionarFiscalDoca(RegistroSel); // Adiciona no modelo BaseFiscalDoca
+            }
+            else
+            {
+                sucesso = await BaseFiscalDocaService.AtualizarDocaAsync(RegistroSel); // Atualiza no modelo BaseFiscalDoca
+            }
             if (sucesso)
             {
                 Snackbar.Add("Dados salvos com sucesso!", Severity.Success);
-                await CarregarDados(); // Recarregar a lista
-                AtualizarEstatisticas();
+                await CarregarDados();  // Recarrega LNcs + Fiscal + Estatísticas
+                LimparFormulario();
             }
             else
             {
@@ -554,13 +610,25 @@
         }
         catch (Exception ex)
         {
+            // Aqui podemos capturar mais detalhes, como o erro da InnerException
             Snackbar.Add($"Erro ao salvar: {ex.Message}", Severity.Error);
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"InnerException: {ex.InnerException.Message}");
+                Snackbar.Add($"Detalhes: {ex.InnerException.Message}", Severity.Error);
+            }
+        }
+        finally
+        {
+            novoRegistro = true;
         }
     }
-
+    // Limpar dados apos inserção
     private void LimparFormulario()
     {
         registroSelecionado = null;
+        RegistroSel = null;
+
         dataChegada = null;
         horaChegada = null;
         transportadora = "";
@@ -569,6 +637,7 @@
         cnpjTransportadora = "";
         placaVeiculo = "";
         doca = "";
+        observacao = "";
         fornecedor = "";
         razaoSocial = "";
         notaFiscal = "";
@@ -591,21 +660,50 @@
         horaAprovacao = null;
         pedido = "";
         localizador = "";
-        
+
         Snackbar.Add("Formulário limpo!", Severity.Info);
     }
-
-    private void EditarRegistro(BaseLNcs registro)
+    private BaseFiscalDoca CriarFiscalAPartirDeLNcs(BaseLNcs lncs)
     {
-        registroSelecionado = registro;
-        CarregarDadosRegistro();
+        return new BaseFiscalDoca
+        {
+            Id = lncs.Id,
+            Armazem = lncs.Armazem,
+            Senha = lncs.Senha,
+            StatusSenha = lncs.StatusSenha,
+            Fornecedor = lncs.Fornecedor,
+            RazaoSocial = lncs.RazaoSocial,
+            NotaFiscal = lncs.NotaFiscal,
+            Serie = lncs.Serie,
+            QtdAgendada = lncs.QtdAgendada,
+            QtdRecebida = lncs.QtdRecebida,
+            TipoDeposito = lncs.TipoDeposito,
+            CategoriaPlano = lncs.CategoriaPlano,
+            Pedido = lncs.Pedido,
+            Localizador = lncs.Localizador,
+            Doca = lncs.Doca,
+            Transportadora = lncs.Transportadora,
+            NomeTransportadora = lncs.NomeTransportadora,
+            CnpjTransportadora = lncs.CnpjTransportadora,
+            CodigoTransportadora = lncs.CodigoTransportadora,
+            PlacaVeiculo = lncs.PlacaVeiculo,
+            DataChegada = lncs.DataChegada,
+            HoraChegada = lncs.HoraChegada,
+            Status = lncs.Status,
+            //Observacao = lncs.Observacao
+        };
     }
-
-    private async Task ImprimirRegistro(BaseLNcs registro)
+    private void EditarRegistro(BaseFiscalDoca registro)
+    {
+        novoRegistro = false;
+        RegistroSel = registro;
+        PreencherTelaAPartirDeFiscal();
+    }
+    private async Task ImprimirRegistro(BaseFiscalDoca registro)
     {
         var dataHoraAtual = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         var statusClass = registro.Status?.ToLower().Replace(" ", "-") ?? "aguardando";
-        
+
         var html = @"
 <html>
 <head>

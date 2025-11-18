@@ -1,0 +1,263 @@
+﻿@page "/dashboard-inbound"
+@using MudBlazor
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudText Typo="Typo.h3" Align="Align.Center" Class="mb-6" Style="font-weight: 600; background: linear-gradient(45deg, #2196F3 30%, #21CBF3 90%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        DASHBOARD INBOUND
+    </MudText>
+
+    <!-- Cards de Resumo -->
+    <MudGrid Class="mb-6">
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="4" Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px;">
+                <MudCardContent>
+                    <div class="d-flex justify-space-between align-center">
+                        <div>
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@TotalSenhas</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.9);">Total de Senhas</MudText>
+                        </div>
+                        <MudIcon Icon="@Icons.Material.Filled.ConfirmationNumber" Size="Size.Large" Style="color: rgba(255,255,255,0.8);" />
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="4" Style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 16px;">
+                <MudCardContent>
+                    <div class="d-flex justify-space-between align-center">
+                        <div>
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@TotalCategorias</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.9);">Categorias</MudText>
+                        </div>
+                        <MudIcon Icon="@Icons.Material.Filled.Category" Size="Size.Large" Style="color: rgba(255,255,255,0.8);" />
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="4" Style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 16px;">
+                <MudCardContent>
+                    <div class="d-flex justify-space-between align-center">
+                        <div>
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@TotalCapacity</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.9);">Capacidade Total</MudText>
+                        </div>
+                        <MudIcon Icon="@Icons.Material.Filled.Inventory" Size="Size.Large" Style="color: rgba(255,255,255,0.8);" />
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="4" Style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 16px;">
+                <MudCardContent>
+                    <div class="d-flex justify-space-between align-center">
+                        <div>
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@PercentualUso.ToString("F1")%</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.9);">% Utilização</MudText>
+                        </div>
+                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Size="Size.Large" Style="color: rgba(255,255,255,0.8);" />
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <!-- Tabela Principal -->
+    <MudCard Elevation="4" Style="border-radius: 16px; overflow: hidden;">
+        <MudCardHeader Style="background: linear-gradient(90deg, #2196F3 0%, #21CBF3 100%); padding: 24px;">
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Style="color: white; font-weight: 600;">
+                    <MudIcon Icon="@Icons.Material.Filled.Dashboard" Style="margin-right: 12px;" />
+                    Agendamentos por Categoria
+                </MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudTextField @bind-Value="searchString" Placeholder="Buscar..." Adornment="Adornment.Start" 
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
+                              Style="background: rgba(255,255,255,0.15); border-radius: 8px;" Variant="Variant.Filled"
+                              Margin="Margin.Dense"></MudTextField>
+            </CardHeaderActions>
+        </MudCardHeader>
+        
+        <MudCardContent Style="padding: 0;">
+            <MudTable Items="@FilteredAgendamentos" Hover="true" Breakpoint="Breakpoint.Sm" Dense="true" 
+                      Style="border-radius: 0;" Elevation="0" FixedHeader="true" Height="600px">
+                <HeaderContent>
+                    <MudTh Style="background-color: #f5f5f5; font-weight: 700;">Prévia Agendamento</MudTh>
+                    <MudTh Style="background-color: #f5f5f5; font-weight: 700;">
+                        <MudTableSortLabel SortBy="new Func<AgendamentoItem, object>(x => x.TotalSenhas)">
+                            Total Senhas
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh Style="background-color: #f5f5f5; font-weight: 700;">Status Rec Fiscal</MudTh>
+                    <MudTh Style="background-color: #f5f5f5; font-weight: 700; text-align: center;">Status</MudTh>
+                    <MudTh Style="background-color: #f5f5f5; font-weight: 700;">Categoria</MudTh>
+                    <MudTh Style="background-color: #f5f5f5; font-weight: 700; text-align: center;">Capacidade</MudTh>
+                    <MudTh Style="background-color: #f5f5f5; font-weight: 700; text-align: center;">Ocupação</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Prévia">
+                        <MudText Typo="Typo.body2" Style="font-weight: 600;">@context.PreviaAgendamento</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Total">
+                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="font-weight: 600;">@context.TotalSenhas</MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Status Fiscal">
+                        <MudText Typo="Typo.body2">@context.StatusRecFiscal</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Status" Style="text-align: center;">
+                        <div class="d-flex justify-center" style="gap: 4px;">
+                            <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Color="@(context.Digitando ? Color.Info : Color.Default)" Title="Digitando" />
+                            <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Color="@(context.Devolvido ? Color.Warning : Color.Default)" Title="Devolvido" />
+                            <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Color="@(context.Aguardando ? Color.Secondary : Color.Default)" Title="Aguardando" />
+                            <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Color="@(context.Finalizado ? Color.Success : Color.Default)" Title="Finalizado" />
+                            <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Color="@(context.NoShow ? Color.Error : Color.Default)" Title="No Show" />
+                        </div>
+                    </MudTd>
+                    <MudTd DataLabel="Categoria">
+                        <MudChip T="string" Color="@GetCategoryColor(context.Categoria)" Size="Size.Small" Variant="Variant.Filled" Style="font-weight: 500;">
+                            @context.Categoria
+                        </MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Capacidade" Style="text-align: center;">
+                        <MudText Typo="Typo.body2" Style="font-weight: 600;">@context.Capacity</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Ocupação" Style="text-align: center;">
+                        <MudProgressLinear Color="@GetProgressColor(context.PercentualOcupacao)" 
+                                          Value="@context.PercentualOcupacao" 
+                                          Size="Size.Large" 
+                                          Style="border-radius: 8px; height: 12px;" />
+                        <MudText Typo="Typo.caption" Style="margin-top: 4px;">@context.PercentualOcupacao.ToString("F0")%</MudText>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{10, 25, 50, 100}" />
+                </PagerContent>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
+
+    <!-- Legenda de Status -->
+    <MudCard Elevation="2" Class="mt-4" Style="border-radius: 16px;">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-3" Style="font-weight: 600;">Legenda de Status</MudText>
+            <div class="d-flex flex-wrap" style="gap: 16px;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Info" Size="Size.Small" Style="margin-right: 8px;" />
+                    <MudText Typo="Typo.body2">Digitando</MudText>
+                </div>
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Warning" Size="Size.Small" Style="margin-right: 8px;" />
+                    <MudText Typo="Typo.body2">Devolvido</MudText>
+                </div>
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Secondary" Size="Size.Small" Style="margin-right: 8px;" />
+                    <MudText Typo="Typo.body2">Aguardando</MudText>
+                </div>
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Success" Size="Size.Small" Style="margin-right: 8px;" />
+                    <MudText Typo="Typo.body2">Finalizado</MudText>
+                </div>
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Error" Size="Size.Small" Style="margin-right: 8px;" />
+                    <MudText Typo="Typo.body2">No Show</MudText>
+                </div>
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Dark" Size="Size.Small" Style="margin-right: 8px;" />
+                    <MudText Typo="Typo.body2">Backlog</MudText>
+                </div>
+            </div>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private string searchString = "";
+    private List<AgendamentoItem> agendamentos = new();
+
+    private int TotalSenhas => agendamentos.Sum(x => x.TotalSenhas);
+    private int TotalCategorias => agendamentos.Count;
+    private int TotalCapacity => agendamentos.Sum(x => x.Capacity);
+    private double PercentualUso => TotalCapacity > 0 ? ((double)TotalSenhas / TotalCapacity) * 100 : 0;
+
+    private IEnumerable<AgendamentoItem> FilteredAgendamentos =>
+        agendamentos.Where(x => string.IsNullOrWhiteSpace(searchString) ||
+            x.PreviaAgendamento.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+            x.StatusRecFiscal.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+            x.Categoria.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+
+    protected override void OnInitialized()
+    {
+        // Dados de exemplo baseados na imagem
+        agendamentos = new List<AgendamentoItem>
+        {
+            new() { PreviaAgendamento = "AR", TotalSenhas = 12, StatusRecFiscal = "Transferência", Categoria = "Bartira", Capacity = 10, Finalizado = true },
+            new() { PreviaAgendamento = "AUDIO", TotalSenhas = 13, StatusRecFiscal = "Linha Marrom", Categoria = "Colchão", Capacity = 20, Aguardando = true },
+            new() { PreviaAgendamento = "AUTOMOTIVOS", TotalSenhas = 1, StatusRecFiscal = "Moveis", Categoria = "Estofados", Capacity = 8 },
+            new() { PreviaAgendamento = "BELEZA & SAÚDE", TotalSenhas = 13, StatusRecFiscal = "Estofados", Categoria = "Branca", Capacity = 22, Digitando = true },
+            new() { PreviaAgendamento = "CASA E CONSTRUÇÃO", TotalSenhas = 1, StatusRecFiscal = "Linha Branca", Categoria = "Marrom", Capacity = 33, NoShow = true },
+            new() { PreviaAgendamento = "COLCHOES", TotalSenhas = 19, StatusRecFiscal = "Colchao", Categoria = "Móveis", Capacity = 8, Finalizado = true },
+            new() { PreviaAgendamento = "COPA E SALA DE JANTAR", TotalSenhas = 14, StatusRecFiscal = "Bartira", Categoria = "Pneu", Capacity = 2, Devolvido = true },
+            new() { PreviaAgendamento = "ESTOFADOS", TotalSenhas = 16, StatusRecFiscal = "Full Cross", Categoria = "Bartira", Capacity = 10, Aguardando = true },
+            new() { PreviaAgendamento = "FERRAMENTAS", TotalSenhas = 14, StatusRecFiscal = "Pneu", Categoria = "Branca", Capacity = 22, Finalizado = true },
+            new() { PreviaAgendamento = "INFORMÁTICA", TotalSenhas = 12, StatusRecFiscal = "OP Linha Marrom", Categoria = "Móveis", Capacity = 15 },
+            new() { PreviaAgendamento = "LAVADORAS", TotalSenhas = 19, StatusRecFiscal = "OP Linha Branca", Categoria = "Colchão", Capacity = 18, Digitando = true },
+            new() { PreviaAgendamento = "MOVEIS DE COZINHA", TotalSenhas = 17, StatusRecFiscal = "Conserto", Categoria = "Estofados", Capacity = 12, Finalizado = true },
+            new() { PreviaAgendamento = "MOVEIS DE QUARTO", TotalSenhas = 17, StatusRecFiscal = "", Categoria = "Pneu", Capacity = 5, Aguardando = true },
+            new() { PreviaAgendamento = "MOVEIS INFANTIS", TotalSenhas = 16, StatusRecFiscal = "", Categoria = "Marrom", Capacity = 25 },
+            new() { PreviaAgendamento = "MOVEIS PARA ESCRITÓRIO", TotalSenhas = 10, StatusRecFiscal = "", Categoria = "Branca", Capacity = 20, NoShow = true },
+            new() { PreviaAgendamento = "MOVEIS SALA DE ESTAR", TotalSenhas = 11, StatusRecFiscal = "", Categoria = "Móveis", Capacity = 14, Finalizado = true },
+            new() { PreviaAgendamento = "PORTATEIS", TotalSenhas = 13, StatusRecFiscal = "", Categoria = "Bartira", Capacity = 16 },
+            new() { PreviaAgendamento = "QUEIMADORES", TotalSenhas = 17, StatusRecFiscal = "", Categoria = "Colchão", Capacity = 11, Devolvido = true },
+            new() { PreviaAgendamento = "REFRIGERACAO", TotalSenhas = 19, StatusRecFiscal = "", Categoria = "Estofados", Capacity = 19, Finalizado = true },
+            new() { PreviaAgendamento = "TABLETS", TotalSenhas = 13, StatusRecFiscal = "", Categoria = "Pneu", Capacity = 7 },
+            new() { PreviaAgendamento = "TELEFONIA CELULAR", TotalSenhas = 14, StatusRecFiscal = "", Categoria = "Branca", Capacity = 21, Aguardando = true },
+            new() { PreviaAgendamento = "TVS", TotalSenhas = 14, StatusRecFiscal = "", Categoria = "Marrom", Capacity = 24, Finalizado = true },
+            new() { PreviaAgendamento = "UTILIDADES DOMESTICAS", TotalSenhas = 13, StatusRecFiscal = "", Categoria = "Móveis", Capacity = 13 },
+            new() { PreviaAgendamento = "VENTILACAO/AQUECEDORES", TotalSenhas = 13, StatusRecFiscal = "", Categoria = "Colchão", Capacity = 17, Digitando = true },
+            new() { PreviaAgendamento = "WEARABLES", TotalSenhas = 2, StatusRecFiscal = "", Categoria = "Estofados", Capacity = 3 },
+        };
+    }
+
+    private Color GetCategoryColor(string categoria)
+    {
+        return categoria switch
+        {
+            "Bartira" => Color.Primary,
+            "Colchão" => Color.Secondary,
+            "Estofados" => Color.Tertiary,
+            "Branca" => Color.Info,
+            "Marrom" => Color.Warning,
+            "Móveis" => Color.Success,
+            "Pneu" => Color.Dark,
+            _ => Color.Default
+        };
+    }
+
+    private Color GetProgressColor(double percentual)
+    {
+        if (percentual >= 90) return Color.Error;
+        if (percentual >= 70) return Color.Warning;
+        if (percentual >= 50) return Color.Info;
+        return Color.Success;
+    }
+
+    public class AgendamentoItem
+    {
+        public string PreviaAgendamento { get; set; } = "";
+        public int TotalSenhas { get; set; }
+        public string StatusRecFiscal { get; set; } = "";
+        public bool Digitando { get; set; }
+        public bool Devolvido { get; set; }
+        public bool Aguardando { get; set; }
+        public bool Finalizado { get; set; }
+        public bool NoShow { get; set; }
+        public bool Backlog { get; set; }
+        public string Categoria { get; set; } = "";
+        public int Capacity { get; set; }
+        public double PercentualOcupacao => Capacity > 0 ? ((double)TotalSenhas / Capacity) * 100 : 0;
+    }
+}

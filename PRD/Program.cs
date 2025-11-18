@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
@@ -60,7 +61,7 @@ namespace PRD
             builder.Services.AddScoped<IProdutoService, ProdutoServiceBulk>();
 
             builder.Services.AddScoped<IBaseLNcsService, BaseLNcsService>();
-
+            builder.Services.AddScoped<IBaseFiscalDocaService, BaseFiscalDocaService>();
             builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name =LocalConnection"));
             var app = builder.Build();
 

@@ -1,0 +1,227 @@
+﻿@page "/1"
+@using MudBlazor
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudGrid Spacing="3">
+
+        <MudItem xs="12" sm="12">
+            <MudGrid Spacing="1">
+
+                <MudItem xs="4">
+                    <MudPaper Class="pa-1" Elevation="3">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Prévia de Agendamentos</MudText>
+                        <MudSimpleTable Dense="true" Hover="true">
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Total de Senhas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Agendamentos)
+                                {
+                                    <tr>
+                                        <td>@item.Categoria</td>
+                                        <td><MudChip T="string" Color="Color.Primary">@item.TotalSenhas.ToString("N2")</MudChip></td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><strong>----------</strong></td>
+                                    <td><strong>----------</strong></td>
+                                </tr>
+                            </tfoot>
+                        </MudSimpleTable>
+                    </MudPaper>
+                </MudItem>
+              
+                <MudItem xs="4">
+                    <MudPaper Class="pa-1" Elevation="3">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Prévia de Agendamentos</MudText>
+                        <MudSimpleTable Dense="true" Hover="true">
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Total de Senhas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Agendamentos)
+                                {
+                                    <tr>
+                                        <td>@item.Categoria</td>
+                                        <td><MudChip T="string" Color="Color.Primary">@item.TotalSenhas.ToString("N2")</MudChip></td>
+
+
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><strong>----------</strong></td>
+                                    <td><strong>----------</strong></td>
+                                </tr>
+                            </tfoot>
+                        </MudSimpleTable>
+                    </MudPaper>
+                </MudItem>
+
+
+                <MudItem xs="4">
+                    <MudPaper Class="pa-1" Elevation="3">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Prévia de Agendamentos</MudText>
+                        <MudSimpleTable Dense="true" Hover="true">
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Total de Senhas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Agendamentos)
+                                {
+                                    <tr>
+                                        <td>@item.Categoria</td>
+                                        <td><MudChip T="string" Color="Color.Primary">@item.TotalSenhas.ToString("N2")</MudChip></td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><strong>Total Geral</strong></td>
+                                    <td><strong>@Agendamentos.Sum(a => a.TotalSenhas)</strong></td>
+                                </tr>
+                            </tfoot>
+                        </MudSimpleTable>
+                    </MudPaper>
+                </MudItem>
+
+            </MudGrid>
+        </MudItem>
+
+        <MudItem xs="12" sm="9">
+            <MudPaper Class="pa-4" Elevation="3">
+                <MudText Typo="Typo.h6" GutterBottom="true">Status Recebimento Fiscal por Categoria</MudText>
+                
+                <MudTable Items="@StatusFiscais" Dense="true" Hover="true" Striped="true" Bordered="true">
+                    <HeaderContent>
+                        <MudTh>Categoria</MudTh>
+                        <MudTh>Digitando</MudTh>
+                        <MudTh>Devolvido</MudTh>
+                        <MudTh>Aguardando</MudTh>
+                        <MudTh>Finalizado</MudTh>
+                        <MudTh>No show</MudTh>
+                        <MudTh>Backlog</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Categoria">@context.Categoria</MudTd>
+                        <MudTd DataLabel="Digitando">@context.Digitando</MudTd>
+                        <MudTd DataLabel="Devolvido">@context.Devolvido</MudTd>
+                        <MudTd DataLabel="Aguardando">@context.Aguardando</MudTd>
+                        <MudTd DataLabel="Finalizado">@context.Finalizado</MudTd>
+                        <MudTd DataLabel="NoShow">@context.NoShow</MudTd>
+                        <MudTd DataLabel="Backlog">@context.Backlog</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
+
+
+
+
+        </MudItem>
+
+        <MudItem xs="12" sm="3">
+            <MudPaper Class="pa-4" Elevation="3">
+                <MudText Typo="Typo.h6" GutterBottom="true">Capacidade por Categoria</MudText>
+                <MudSimpleTable Dense="true" Hover="true">
+                    <thead>
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Capacity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Capacidades)
+                        {
+                            <tr>
+                                <td>@item.Categoria</td>
+                                <td><strong>@item.Capacity</strong></td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+
+@code {
+    // --- Modelos de Dados (Classes C#) ---
+
+    public class PreviaAgendamento
+    {
+        public string Categoria { get; set; }
+        public int TotalSenhas { get; set; }
+    }
+
+    public class CapacidadeCategoria
+    {
+        public string Categoria { get; set; }
+        public int Capacity { get; set; }
+    }
+
+    public class StatusFiscal
+    {
+        public string Categoria { get; set; }
+        public int Digitando { get; set; }
+        public int Devolvido { get; set; }
+        public int Aguardando { get; set; }
+        public int Finalizado { get; set; }
+        public int NoShow { get; set; }
+        public int Backlog { get; set; }
+    }
+
+    // --- Dados para preencher a tela (substitua isso pela sua lógica de banco de dados) ---
+
+    private List<PreviaAgendamento> Agendamentos = new List<PreviaAgendamento>();
+    private List<CapacidadeCategoria> Capacidades = new List<CapacidadeCategoria>();
+    private List<StatusFiscal> StatusFiscais = new List<StatusFiscal>();
+
+    protected override void OnInitialized()
+    {
+        // Dados de exemplo baseados na sua imagem
+        Agendamentos = new List<PreviaAgendamento>
+        {
+            new PreviaAgendamento { Categoria = "AR", TotalSenhas = 12 },
+            new PreviaAgendamento { Categoria = "AUDIO", TotalSenhas = 13 },
+            new PreviaAgendamento { Categoria = "AUTOMOTIVOS", TotalSenhas = 1 },
+            new PreviaAgendamento { Categoria = "BELEZA & SAUDE", TotalSenhas = 13 },
+              new PreviaAgendamento { Categoria = "AR", TotalSenhas = 12 },
+            new PreviaAgendamento { Categoria = "AUDIO", TotalSenhas = 13 },
+         
+            // ... adicione os outros ...
+        };
+
+        Capacidades = new List<CapacidadeCategoria>
+        {
+            new CapacidadeCategoria { Categoria = "Bariri", Capacity = 10 },
+            new CapacidadeCategoria { Categoria = "Colchão", Capacity = 20 },
+            new CapacidadeCategoria { Categoria = "Estofados", Capacity = 8 },
+                 new CapacidadeCategoria { Categoria = "Estofados", Capacity = 8 },
+            // ... adicione os outros ...
+        };
+
+        StatusFiscais = new List<StatusFiscal>
+        {
+            new StatusFiscal { Categoria = "Transferência" },
+            new StatusFiscal { Categoria = "Linha Marrom" },
+            new StatusFiscal { Categoria = "Móveis" },
+            new StatusFiscal { Categoria = "Estofados" },
+            // ... adicione os outros ...
+            // Os valores (Digitando, Devolvido, etc.) virão do seu banco de dados
+        };
+    }
+}

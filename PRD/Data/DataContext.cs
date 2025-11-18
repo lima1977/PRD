@@ -13,6 +13,8 @@ namespace PRD.Data
 
         public DbSet<BaseLNcs> BaseRec { get; set; }
 
+        public DbSet<BaseFiscalDoca> BaseFiscDoc { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
